@@ -1,3 +1,40 @@
 body{
-    background-color: antiquewhite;
+    background-color: white;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+nav{
+    background-color: rgb(76, 206, 167);
+    color:white;
+    height: 60px;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    padding-inline-start: 30px;
+}
+form{
+    margin: 20px;
+    display: flex;
+}
+#inputDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 30px;
+    height: 80%;
+
+}
+#signupButtonDiv{
+    margin: 30px;
+    display: flex;
+    align-items: flex-end;
+}
+#signup{
+    background-color: rgb(76, 206, 167);
+    border-radius: 10px;
+    border: 1px solid;
+    height: 35px;
+    width: 70px;
+}
+#errorMsg{
+    color:red;
 }

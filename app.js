@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const app = express();
 
+const sequelize = require('./util/database');
 const userRoute = require('./route/user');
 
 app.use(bodyParser.json());
@@ -14,4 +15,9 @@ app.use((req,res,next)=>{
     res.status(404).send('Error: 404');
 })
 
-app.listen(3000);
+sequelize
+.sync()
+.then(()=>{
+    app.listen(3000);
+})
+.catch(err=>console.log(err));

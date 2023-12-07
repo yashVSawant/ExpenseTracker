@@ -1,5 +1,5 @@
 const signup = document.getElementById('signup');
-
+const errorMsg = document.getElementById('errorMsg');
 
 signup.addEventListener('click',async(e)=>{
     e.preventDefault();
@@ -13,8 +13,20 @@ signup.addEventListener('click',async(e)=>{
                 email:email.value,
                 password:password.value
             }
-            const getLoginPost = await axios.post('http://localhost:3000/user/login',signupDetails);
-            console.log(getLoginPost);
+            const getSignupPost = await axios.post('http://localhost:3000/user/login',signupDetails);
+            console.log(getSignupPost.data);
+            name.value ='';
+            email.value ='';
+            password.value ='';
+            if(getSignupPost.data.errors){
+                errorMsg.innerText =`Error:403 request failed ;email ${getSignupPost.data.fields.email} already exist`
+                // console.log(getSignupPost.data.fields)
+                setTimeout(()=>{
+                    errorMsg.innerText = '';
+                },2000);
+            }else{
+                console.log('posted')
+            }
         }catch(err){
             console.log(err)
         }
