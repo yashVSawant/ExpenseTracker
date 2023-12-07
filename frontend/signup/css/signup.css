@@ -11,7 +11,7 @@ nav{
     align-items: center;
     padding-inline-start: 30px;
 }
-form{
+#mainForm{
     margin: 20px;
     display: flex;
 }

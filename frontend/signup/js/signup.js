@@ -13,7 +13,7 @@ signup.addEventListener('click',async(e)=>{
                 email:email.value,
                 password:password.value
             }
-            const getSignupPost = await axios.post('http://localhost:3000/user/login',signupDetails);
+            const getSignupPost = await axios.post('http://localhost:3000/user/sigup',signupDetails);
             console.log(getSignupPost.data);
             name.value ='';
             email.value ='';

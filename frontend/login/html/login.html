@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <div id="container">
+        <div id="main" >
+                <nav>
+                    <h2>Day to Day Expences</h2>
+                </nav>
+            <form>
+                <h3>login</h3>
+                <hr>
+                <div id="mainForm">
+                    <div id="inputDiv">
+                        <lable>Email :</lable>
+                        <input type="email" id="email" name="email" required>
+                        <lable>password :</lable>
+                        <input type="password" id="password" name="password" required> 
+                    </div>
+                    <div id="loginButtonDiv">
+                        <button type="submit" id="login">Login</button>
+                    </div>
+                </div>
+                
+            </form>
+            <p>New User : <a href="C:\Users\Intel\backend\majorExpenceTracker\frontend\signup\html\signup.html">signup</a></p>
+            <p id="errorMsg"></p> 
+        </div>
+    </div>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="../js/login.js"></script>
+</body>
+</html>
