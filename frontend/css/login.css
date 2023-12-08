@@ -11,9 +11,22 @@ nav{
     align-items: center;
     padding-inline-start: 30px;
 }
+form{
+    margin: 10px;
+    width: 55%;
+    margin-inline: 25%;
+    border: 2px solid rgb(25, 110, 85);
+    border-radius: 15px;
+}
+input{
+    width: 40%;
+}
+#loginHeading{
+    display: flex;
+    justify-content: center;
+}
 #mainForm{
     margin: 20px;
-    display: flex;
 }
 #inputDiv{
     display: flex;
@@ -23,12 +36,10 @@ nav{
     height: 80%;
 
 }
-#signupButtonDiv{
+#loginButtonDiv{
     margin: 30px;
-    display: flex;
-    align-items: flex-end;
 }
-#signup{
+#login{
     background-color: rgb(76, 206, 167);
     border-radius: 10px;
     border: 1px solid;

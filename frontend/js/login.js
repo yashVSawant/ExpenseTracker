@@ -12,23 +12,21 @@ login.addEventListener('click',async(e)=>{
                 password:password.value
             }
             const getloginPost = await axios.post('http://localhost:3000/user/login',loginDetails);
-           if(getloginPost.data){
             const getPasswordInfo = await axios.post('http://localhost:3000/user/checkPassword',loginDetails);
-            if(getPasswordInfo.data){
-                console.log('valid user')
-            }else{
-                errorMsg.innerText =`incorrect password`;
-            }
-           }else{
-                errorMsg.innerText =`user not found`;
-           }
-            email.value ='';
-            password.value ='';
-                setTimeout(()=>{
-                    errorMsg.innerText = '';
-                },2000);
+            console.log('login successfully');
+            alert('User login successfully'); 
+            clearInputFields();     
         }catch(err){
-            console.log(err)
+            // console.log(err)
+            errorMsg.innerText =`${err.response.data}`;
+            setTimeout(()=>{
+                errorMsg.innerText = '';
+            },5000);
+            clearInputFields();
         }
     }  
+    function clearInputFields(){
+        email.value ='';
+        password.value ='';
+    }
 })

@@ -13,22 +13,22 @@ signup.addEventListener('click',async(e)=>{
                 email:email.value,
                 password:password.value
             }
-            const getSignupPost = await axios.post('http://localhost:3000/user/sigup',signupDetails);
-            console.log(getSignupPost.data);
-            name.value ='';
-            email.value ='';
-            password.value ='';
-            if(getSignupPost.data.errors){
-                errorMsg.innerText =`Error:403 request failed ;email ${getSignupPost.data.fields.email} already exist`
+            const getSignupPost = await axios.post('http://localhost:3000/user/signup',signupDetails);
+            alert('User signup successfully');
+            clearInputFields();
+        }catch(err){
+            console.log(err)
+            errorMsg.innerText =`${err.response.data}`
                 // console.log(getSignupPost.data.fields)
                 setTimeout(()=>{
                     errorMsg.innerText = '';
-                },2000);
-            }else{
-                console.log('posted')
-            }
-        }catch(err){
-            console.log(err)
+                },5000);
+                clearInputFields();
         }
+    }
+    function clearInputFields(){
+        name.value ='';
+        email.value ='';
+        password.value ='';
     }  
 })
