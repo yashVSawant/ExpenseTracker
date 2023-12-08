@@ -18,8 +18,8 @@ form{
     border: 2px solid rgb(25, 110, 85);
     border-radius: 15px;
 }
-input{
-    width: 40%;
+select , input{
+    width: 65%;
 }
 #mainForm{
     margin: 20px;

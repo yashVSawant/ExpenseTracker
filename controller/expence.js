@@ -19,3 +19,14 @@ exports.getExpences = async(req,res,next)=>{
         res.status(500).json({success:false,message:'error Something went wrong !'})
     }
 }
+
+exports.deleteExpence = async(req,res,next)=>{
+    const id = req.query.id;
+    try{
+        const getExpence = await expence.findByPk(id);
+        getExpence.destroy();
+        res.json({success:true})
+    }catch(err){
+        console.log(err)
+    }
+}

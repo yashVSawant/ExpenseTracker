@@ -16,10 +16,22 @@ addExpence.addEventListener('click',async(e)=>{
     }    
 })
 
+showExpences.addEventListener('click',async(e)=>{
+    if(e.target.classList.contains('delete')){
+        try{
+            const id = e.target.parentNode.id;
+            await axios.delete(`http://localhost:3000/expence/deleteExpence?id=${id}`);
+            const expenceDiv = document.getElementById(`${id}`);
+            showExpences.removeChild(expenceDiv);
+        }catch(err){
+            console.log(err)
+        }
+    }
+})
+
 window.addEventListener('DOMContentLoaded',async()=>{
     const getExpenceData = await axios.get('http://localhost:3000/expence/getExpences');
     getExpenceData.data.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
-
 })
 
 function createExpences(amount,description,category,id){

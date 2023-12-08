@@ -10,5 +10,6 @@ route.get('/expencePage',(req,res,next)=>{
 })
 route.get('/getExpences',expenceController.getExpences);
 route.post('/postExpence',expenceController.postExpence);
+route.delete('/deleteExpence',expenceController.deleteExpence);
 
 module.exports = route;
