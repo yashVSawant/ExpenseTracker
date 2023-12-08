@@ -1,15 +1,13 @@
 const express = require('express');
-const path = require('path');
+
+const authentication = require('../middleware/authentication');
 
 const route = express.Router();
 
 const expenceController = require('../controller/expence');
 
-route.get('/expencePage',(req,res,next)=>{
-    res.sendFile(path.join(__dirname,'..','frontend','html','expence.html'));
-})
-route.get('/getExpences',expenceController.getExpences);
-route.post('/postExpence',expenceController.postExpence);
-route.delete('/deleteExpence',expenceController.deleteExpence);
+route.get('/getExpences',authentication.authenticate,expenceController.getExpences);
+route.post('/postExpence',authentication.authenticate,expenceController.postExpence);
+route.delete('/deleteExpence',authentication.authenticate,expenceController.deleteExpence);
 
 module.exports = route;

@@ -12,10 +12,12 @@ login.addEventListener('click',async(e)=>{
                 password:password.value
             }
             const getloginPost = await axios.post('http://localhost:3000/user/login',loginDetails);
-            console.log(getloginPost.data.message);
+            const token = getloginPost.data.token;
+            console.log(token);
             clearInputFields();    
             alert(`${getloginPost.data.message}`);
-            window.location.href = "http://localhost:3000/expence/expencePage";
+            localStorage.setItem('token',token);
+            window.location.href = '../html/expence.html';
         }catch(err){
             console.log(err)
             errorMsg.innerText =`${err.message}`;

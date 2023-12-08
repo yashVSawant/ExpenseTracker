@@ -1,5 +1,7 @@
 const addExpence = document.getElementById('addExpence');
 const showExpences = document.getElementById('showExpences');
+const token = localStorage.getItem('token');
+// console.log(user)
 
 addExpence.addEventListener('click',async(e)=>{
     e.preventDefault();
@@ -7,9 +9,8 @@ addExpence.addEventListener('click',async(e)=>{
         const amount = document.getElementById('amount').value;
         const decription = document.getElementById('decription').value;
         const category = document.getElementById('category').value;
-
         console.log(amount , decription , category);
-        const getPostExpence = await axios.post('http://localhost:3000/expence/postExpence',{amount , decription , category})
+        const getPostExpence = await axios.post('http://localhost:3000/expence/postExpence',{amount , decription , category},{headers:{'Authorization':token}})
         createExpences(amount , decription , category,getPostExpence.data.id)
     }catch(err){
         console.log(err)
@@ -20,7 +21,7 @@ showExpences.addEventListener('click',async(e)=>{
     if(e.target.classList.contains('delete')){
         try{
             const id = e.target.parentNode.id;
-            await axios.delete(`http://localhost:3000/expence/deleteExpence?id=${id}`);
+            await axios.delete(`http://localhost:3000/expence/deleteExpence?id=${id}`,{headers:{'Authorization':token}});
             const expenceDiv = document.getElementById(`${id}`);
             showExpences.removeChild(expenceDiv);
         }catch(err){
@@ -30,7 +31,7 @@ showExpences.addEventListener('click',async(e)=>{
 })
 
 window.addEventListener('DOMContentLoaded',async()=>{
-    const getExpenceData = await axios.get('http://localhost:3000/expence/getExpences');
+    const getExpenceData = await axios.get('http://localhost:3000/expence/getExpences',{headers:{'Authorization':token}});
     getExpenceData.data.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
 })
 
