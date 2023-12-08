@@ -13,7 +13,7 @@ signup.addEventListener('click',async(e)=>{
                 email:email.value,
                 password:password.value
             }
-            const getSignupPost = await axios.post('http://localhost:3000/user/signup',signupDetails);
+            await axios.post('http://localhost:3000/user/signup',signupDetails);
             alert('User signup successfully');
             clearInputFields();
         }catch(err){
@@ -25,6 +25,11 @@ signup.addEventListener('click',async(e)=>{
                 },5000);
                 clearInputFields();
         }
+    }else{
+        errorMsg.innerText ='Please Enter All Fields'
+        setTimeout(()=>{
+            errorMsg.innerText = '';
+        },5000); 
     }
     function clearInputFields(){
         name.value ='';

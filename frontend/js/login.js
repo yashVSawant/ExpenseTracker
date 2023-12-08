@@ -14,7 +14,8 @@ login.addEventListener('click',async(e)=>{
             const getloginPost = await axios.post('http://localhost:3000/user/login',loginDetails);
             console.log(getloginPost.data.message);
             clearInputFields();    
-            alert(`${getloginPost.data.message}`);  
+            alert(`${getloginPost.data.message}`);
+            window.location.href = "http://localhost:3000/expence/expencePage";
         }catch(err){
             console.log(err)
             errorMsg.innerText =`${err.message}`;

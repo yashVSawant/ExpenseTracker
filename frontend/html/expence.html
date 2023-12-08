@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expence</title>
+    <link rel="stylesheet" href="/css/expence.css">
+</head>
+<body>
+    <div id="container">
+        <div id="main" >
+                <nav>
+                    <h2>Day to Day Expences</h2>
+                </nav>
+            <form>
+                <div id="mainForm">
+                    <div id="inputDiv">
+                        <lable>Amount :</lable>
+                        <input type="number" id="amount" name="amount" required>
+                        <lable>Decription :</lable>
+                        <input type="text" id="decription" name="decription" required>
+                        <label>Category :</label> 
+                        <select class="select" id="category" name="category" required>
+                            <option name="option1" name="food">food</option>
+                            <option name="option1" name="grocery">grocery</option>
+                            <option name="option1" name="fuel">fuel</option>
+                            <option name="option1" name="travel">travel</option>
+                            <option name="option1" name="entertainment">entertainment</option>
+                        </select>
+                    </div>
+                    <div id="addButtonDiv">
+                        <button type="submit" id="addExpence">Add Expence</button>
+                    </div>
+                </div>
+                
+            </form>
+           <div id="showExpences"></div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="/js/expence.js"></script>
+</body>
+</html>
