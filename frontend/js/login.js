@@ -12,18 +12,22 @@ login.addEventListener('click',async(e)=>{
                 password:password.value
             }
             const getloginPost = await axios.post('http://localhost:3000/user/login',loginDetails);
-            const getPasswordInfo = await axios.post('http://localhost:3000/user/checkPassword',loginDetails);
-            console.log('login successfully');
-            alert('User login successfully'); 
-            clearInputFields();     
+            console.log(getloginPost.data.message);
+            clearInputFields();    
+            alert(`${getloginPost.data.message}`);  
         }catch(err){
-            // console.log(err)
-            errorMsg.innerText =`${err.response.data}`;
+            console.log(err)
+            errorMsg.innerText =`${err.message}`;
             setTimeout(()=>{
                 errorMsg.innerText = '';
             },5000);
             clearInputFields();
         }
+    }else{
+            errorMsg.innerText ='Please Enter All Fields';
+            setTimeout(()=>{
+                errorMsg.innerText = '';
+            },5000);
     }  
     function clearInputFields(){
         email.value ='';
