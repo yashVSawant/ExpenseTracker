@@ -9,7 +9,8 @@ const user = sequelize.define('User',{
         allowNull:false,
         unique:true
     },
-    password:Sequelize.STRING
+    password:Sequelize.STRING,
+    isPremium:Sequelize.BOOLEAN,
 });
 
 module.exports = user;

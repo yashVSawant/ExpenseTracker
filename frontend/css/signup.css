@@ -3,7 +3,7 @@ body{
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 nav{
-    background-color: rgb(76, 206, 167);
+    background-color: rgb(206, 193, 76);
     color:white;
     height: 60px;
     display: flex;
@@ -15,7 +15,7 @@ form{
     margin: 10px;
     width: 55%;
     margin-inline: 25%;
-    border: 2px solid rgb(25, 110, 85);
+    border: 2px solid rgb(163, 151, 37);
     border-radius: 15px;
 }
 input{

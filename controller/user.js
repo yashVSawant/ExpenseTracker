@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 exports.postSignupInfo = async(req,res,next)=>{
-    const {name,email,password} = req.body;
+    const {name,email,password,isPremium} = req.body;
     try{
         if(isstringinvalid(name) || isstringinvalid(email) || isstringinvalid(password)){
             return res.status(400).json({err:'bad parameter : somthing went wrong'})
@@ -14,7 +14,8 @@ exports.postSignupInfo = async(req,res,next)=>{
             await user.create({
                 name,
                 email,
-                password:hash
+                password:hash,
+                isPremium
             });
             res.status(201).send('User signup successfully');
         })

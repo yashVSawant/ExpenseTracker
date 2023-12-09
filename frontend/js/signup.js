@@ -11,7 +11,8 @@ signup.addEventListener('click',async(e)=>{
             const signupDetails = {
                 name:name.value,
                 email:email.value,
-                password:password.value
+                password:password.value,
+                isPremium:false
             }
             await axios.post('http://localhost:3000/user/signup',signupDetails);
             alert('User signup successfully');

@@ -1,5 +1,5 @@
 body{
-    background-color: white;
+    background-color: rgb(253, 251, 253);
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 nav{
@@ -20,6 +20,13 @@ form{
 }
 select , input{
     width: 65%;
+}
+#premiumButton{
+    background-color: rgb(194, 194, 37);
+    border: 1px solid rgb(241, 241, 155);
+    border-radius: 10px;
+    width: 90px;
+    height: 40px;
 }
 #mainForm{
     margin: 20px;
