@@ -16,7 +16,7 @@ signup.addEventListener('click',async(e)=>{
             }
             await axios.post('http://localhost:3000/user/signup',signupDetails);
             alert('User signup successfully');
-            clearInputFields();
+            window.location.href = '../html/login.html';
         }catch(err){
             console.log(err)
             errorMsg.innerText =`${err.response.data}`

@@ -8,6 +8,7 @@ const sequelize = require('./util/database');
 const userRoute = require('./route/user');
 const expenceRoute = require('./route/expence');
 const authenticateRoute = require('./route/purchase');
+const premiumRoute = require('./route/premium');
 
 const expence = require('./model/expence');
 const user = require('./model/user');
@@ -27,6 +28,7 @@ app.use(express.static('frontend'));
 app.use('/user',userRoute);
 app.use('/expence',expenceRoute);
 app.use('/purchase',authenticateRoute);
+app.use('/premium',premiumRoute);
 
 app.use((req,res,next)=>{
     res.status(404).send('Error: 404');

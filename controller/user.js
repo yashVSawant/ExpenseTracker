@@ -38,7 +38,7 @@ exports.checkEmailAndPassword = async(req,res,next)=>{
                     res.status(500).json({success:false ,message:'something went wrong !'})                   
                 }
                 if(result){
-                    res.status(201).json({success:true ,message:'User login succesfull',token:generateAccessToken(checkUser.id,checkUser.name)})
+                    res.status(201).json({success:true ,message:'User login succesfull',token:generateAccessToken(checkUser.id,checkUser.name,checkUser.isPremium)})
                 }else{
                     res.status(401).json({success:false ,message:'incorrect password !'})
                 }
@@ -56,6 +56,6 @@ function isstringinvalid(getString){
    return getString === ''?true:false;
 }
 
-function generateAccessToken(id,name){
-    return jwt.sign({userId:id , name:name},'yash');
+function generateAccessToken(id,name,isPremium){
+    return jwt.sign({userId:id , name:name ,isPremium:isPremium},'yash');
 }

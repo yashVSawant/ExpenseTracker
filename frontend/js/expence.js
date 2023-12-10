@@ -3,6 +3,19 @@ const addExpence = document.getElementById('addExpence');
 const showExpences = document.getElementById('showExpences');
 const token = localStorage.getItem('token');
 const premium = document.getElementById('premiumButton')
+const leaderboard = document.getElementById('leaderboard');
+const showLeaderboard = document.getElementById('showLeaderboard');
+const leaderboardLable = document.getElementById('leaderboardLable');
+
+leaderboard.addEventListener('click',async()=>{
+    const result = await axios.get('http://localhost:3000/premium/getLeaderboard');
+    leaderboardLable.style.display='inline'
+    result.data.forEach(async(item)=>{
+        const userName = await axios.get(`http://localhost:3000/premium/getUserName?id=${item.userId}`);
+        createLeaderboard(userName.data,item.totalExpense,item.userId)
+    }) 
+    
+})
 // console.log(user)
 premium.onclick = async (e)=>{
     console.log(token);
@@ -70,17 +83,19 @@ showExpences.addEventListener('click',async(e)=>{
 
 window.addEventListener('DOMContentLoaded',async()=>{
     const getExpenceData = await axios.get('http://localhost:3000/expence/getExpences',{headers:{'Authorization':token}});
-    getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
     if(getExpenceData.data.isPremium){
         makePremium();
     }
+    getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
 })
 function makePremium(){
         const premium = document.getElementById('premium');
+        const leaderboard = document.getElementById('leaderboard')
         const nav = document.getElementsByTagName('nav');
         nav[0].style.backgroundColor ='rgb(247, 125, 247)';
         addExpence.style.backgroundColor='rgb(247, 125, 247)'
         premium.style.display='none';
+        leaderboard.style.display='inline';
 }
 
 function createExpences(amount,description,category,id){
@@ -105,4 +120,20 @@ function createExpences(amount,description,category,id){
 
     showExpences.appendChild(expenceDiv)
     
+}
+
+function createLeaderboard(name,amount,id){
+    const expenceDiv = document.createElement('div');
+    const getName = document.createElement('p');
+    const totalAmount = document.createElement('p');
+
+    expenceDiv.id=id;
+    expenceDiv.className='premiumLeaderboard';
+    getName.innerText=`name :${name} -`;
+    totalAmount.innerText=`total amount:${amount}`;
+
+    expenceDiv.appendChild(getName);
+    expenceDiv.appendChild(totalAmount);
+
+    showLeaderboard.appendChild(expenceDiv)
 }

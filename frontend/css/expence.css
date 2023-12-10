@@ -59,3 +59,10 @@ select , input{
     align-items: center;
     margin: 2px;
 }
+.premiumLeaderboard{
+    background-color: rgb(250, 145, 232);
+    height: 40px;
+    display: flex;
+    align-items: center;
+    margin: 2px;
+}
