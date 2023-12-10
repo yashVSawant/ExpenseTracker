@@ -1,5 +1,6 @@
 const login = document.getElementById('login');
 const errorMsg = document.getElementById('errorMsg');
+const forgotPassword = document.getElementById('forgotPassword');
 
 login.addEventListener('click',async(e)=>{
     e.preventDefault();
@@ -35,5 +36,15 @@ login.addEventListener('click',async(e)=>{
     function clearInputFields(){
         email.value ='';
         password.value ='';
+    }
+})
+
+forgotPassword.addEventListener('click',async(e)=>{
+    e.preventDefault();
+    try{
+        const callForgotPassword = await axios.get('http://localhost:3000/password/forgotPassword')
+        console.log(callForgotPassword)
+    }catch(err){
+        console.log(err)
     }
 })
