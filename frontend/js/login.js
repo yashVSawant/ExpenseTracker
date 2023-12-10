@@ -39,12 +39,7 @@ login.addEventListener('click',async(e)=>{
     }
 })
 
-forgotPassword.addEventListener('click',async(e)=>{
-    e.preventDefault();
-    try{
-        const callForgotPassword = await axios.get('http://localhost:3000/password/forgotPassword')
-        console.log(callForgotPassword)
-    }catch(err){
-        console.log(err)
-    }
+forgotPassword.addEventListener('click',(e)=>{
+    e.preventDefault()
+    window.location.href = '../html/forgotPassword.html';
 })
