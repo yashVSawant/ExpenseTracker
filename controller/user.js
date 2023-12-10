@@ -15,7 +15,8 @@ exports.postSignupInfo = async(req,res,next)=>{
                 name,
                 email,
                 password:hash,
-                isPremium
+                isPremium,
+                totalExpence:0
             });
             res.status(201).send('User signup successfully');
         })

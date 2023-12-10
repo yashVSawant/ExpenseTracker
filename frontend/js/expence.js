@@ -11,8 +11,7 @@ leaderboard.addEventListener('click',async()=>{
     const result = await axios.get('http://localhost:3000/premium/getLeaderboard');
     leaderboardLable.style.display='inline'
     result.data.forEach(async(item)=>{
-        if(!item.totalCost)item.totalCost=0;
-        createLeaderboard(item.name,item.totalCost)
+        createLeaderboard(item.name,item.totalExpence)
     }) 
     
 })
