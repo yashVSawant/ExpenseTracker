@@ -11,8 +11,8 @@ leaderboard.addEventListener('click',async()=>{
     const result = await axios.get('http://localhost:3000/premium/getLeaderboard');
     leaderboardLable.style.display='inline'
     result.data.forEach(async(item)=>{
-        const userName = await axios.get(`http://localhost:3000/premium/getUserName?id=${item.userId}`);
-        createLeaderboard(userName.data,item.totalExpense,item.userId)
+        if(!item.totalCost)item.totalCost=0;
+        createLeaderboard(item.name,item.totalCost)
     }) 
     
 })
@@ -122,12 +122,11 @@ function createExpences(amount,description,category,id){
     
 }
 
-function createLeaderboard(name,amount,id){
+function createLeaderboard(name,amount){
     const expenceDiv = document.createElement('div');
     const getName = document.createElement('p');
     const totalAmount = document.createElement('p');
 
-    expenceDiv.id=id;
     expenceDiv.className='premiumLeaderboard';
     getName.innerText=`name :${name} -`;
     totalAmount.innerText=`total amount:${amount}`;
