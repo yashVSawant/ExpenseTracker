@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@getbrevo/brevo": "^2.0.0-beta.4",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -8,7 +9,8 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.5",
     "razorpay": "^2.9.2",
-    "sequelize": "^6.35.1"
+    "sequelize": "^6.35.1",
+    "sib-api-v3-sdk": "^8.5.0"
   },
   "scripts": {
     "start": "nodemon app.js"

@@ -2,10 +2,19 @@ const enter = document.getElementById('enter')
 
 enter.addEventListener('click',async(e)=>{
     e.preventDefault();
-    try{
-        const callForgotPassword = await axios.get('http://localhost:3000/password/forgotPassword')
-        console.log(callForgotPassword)
-    }catch(err){
-        console.log(err)
+    const email = document.getElementById('email').value;
+    const errorMsg = document.getElementById('errorMsg');
+    errorMsg.innerText='';
+    if(email){
+        try{ 
+            const callForgotPassword = await axios.post('http://localhost:3000/password/forgotPassword',{email})
+            console.log(callForgotPassword)
+        }catch(err){
+            console.log(err)
+        }
+    }else{
+        
+        errorMsg.innerText = 'please enter email !'
     }
+    
 })
