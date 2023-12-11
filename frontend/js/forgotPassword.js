@@ -1,4 +1,4 @@
-const enter = document.getElementById('enter')
+const enter = document.getElementById('enter');
 
 enter.addEventListener('click',async(e)=>{
     e.preventDefault();

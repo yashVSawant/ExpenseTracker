@@ -14,12 +14,16 @@ const passwordRoute = require('./route/password');
 const expence = require('./model/expence');
 const user = require('./model/user');
 const order = require('./model/order');
+const resetPasswordRequest = require('./model/FPRequest');
 
 user.hasMany(expence);
 expence.belongsTo(user);
 
 user.hasMany(order);
 order.belongsTo(user);
+
+user.hasMany(resetPasswordRequest);
+resetPasswordRequest.belongsTo(user);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));

@@ -2,28 +2,27 @@ const user = require('../model/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-exports.postSignupInfo = async(req,res,next)=>{
+exports.postSignupInfo = (req,res,next)=>{
     const {name,email,password,isPremium} = req.body;
-    try{
         if(isstringinvalid(name) || isstringinvalid(email) || isstringinvalid(password)){
             return res.status(400).json({err:'bad parameter : somthing went wrong'})
         }
         const saltRound = 10;
         bcrypt.hash(password,saltRound,async(err,hash)=>{
-            console.log(err);
-            await user.create({
-                name,
-                email,
-                password:hash,
-                isPremium,
-                totalExpence:0
-            });
-            res.status(201).send('User signup successfully');
+            console.log('error from user.controller>>>',err);
+            try{
+                await user.create({
+                    name,
+                    email,
+                    password:hash,
+                    isPremium,
+                    totalExpence:0
+                });
+                res.status(201).send('User signup successfully');
+            }catch(err){
+                res.status(403).send('email already exist');
+            }  
         })
-    }catch(err){
-        // console.log(err)
-        res.status(403).send('email already exist');
-    }
 }
 
 exports.checkEmailAndPassword = async(req,res,next)=>{
