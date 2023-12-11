@@ -1,0 +1,61 @@
+body{
+ background-color: rgb(231, 218, 201);
+ align-items: stretch;
+ height: 100%;
+ display: flex;
+ flex-direction: column;
+}
+p{
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+}
+h4{
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+}
+#dateLabel{
+    color:blue;
+    margin-inline-end: 70%;
+}
+.tableHead{
+    background-color: rgb(190, 128, 47);
+}
+table{
+    width: 80%;
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+th, td {
+    border: 1px solid black; 
+    text-align: left;
+}
+tr {
+    height: 10px; /* Set the height for all rows */
+  }
+td {
+    font-size:xx-small;
+}
+th{
+    font-size: small;
+}
+#tablesDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#headingDiv{
+    display: flex;
+    justify-content: center;
+}
+#dateCol{
+   width: 13%;
+}
+#descripCol{
+    width: 30%;
+}
+#monthCol{
+    width: 14%;
+}
+#notesDateCol{
+    width: 25%;
+}

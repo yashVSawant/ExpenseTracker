@@ -13,7 +13,7 @@ reset.addEventListener('click',()=>{
             const id = path[path.length-1];
             console.log(id);
             axios.post('http://localhost:3000/password/setNewPassword',{password,id}).then(res=>{
-                alert(res.data);
+            alert(res.data);
             });
         }else{
             errormsg.innerText="passwords didn't match";

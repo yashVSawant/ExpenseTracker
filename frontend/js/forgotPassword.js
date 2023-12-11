@@ -8,7 +8,8 @@ enter.addEventListener('click',async(e)=>{
     if(email){
         try{ 
             const callForgotPassword = await axios.post('http://localhost:3000/password/forgotPassword',{email})
-            console.log(callForgotPassword)
+            console.log(callForgotPassword);
+            window.location.href='../html/login.html'
         }catch(err){
             console.log(err)
         }
