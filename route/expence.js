@@ -11,5 +11,6 @@ route.post('/postExpence',authentication.authenticate,expenceController.postExpe
 route.delete('/deleteExpence',authentication.authenticate,expenceController.deleteExpence);
 route.get('/isPremiumUser',authentication.authenticate,expenceController.isPremium);
 route.get('/download',authentication.authenticate,expenceController.downloadExpense);
+route.get('/reportUrl',authentication.authenticate,expenceController.getUrl)
 
 module.exports = route;

@@ -1,6 +1,8 @@
 const expence = require('../model/expence');
+const reportUrl = require('../model/reportUrl');
 const sequelize = require('../util/database');
-const AWS = require('aws-sdk');
+const userServices = require('../services/userExpences');
+const S3Services = require('../services/S3Services');
 
 exports.postExpence = async(req,res,next)=>{
     const t = await sequelize.transaction();;
@@ -20,9 +22,16 @@ exports.postExpence = async(req,res,next)=>{
 
 exports.getExpences = async(req,res,next)=>{
     try{
-        const isPremium = req.user.isPremium
-        const allexpences = await req.user.getExpences();
-        res.json({allexpences,isPremium});
+        const currentPage = req.query.page;
+        const offset = (currentPage-1)* 10 ;
+        const totalExpenses = await req.user.countExpences();
+        const hasNextPage = (offset+10) < totalExpenses 
+        const hasPreviousPage = currentPage>1 
+        const totalPage = Math.ceil(totalExpenses/10);
+        console.log('totalPage',totalPage);
+        const allexpences = await req.user.getExpences({limit: 10,offset:offset});
+        const data = {currentPage,totalPage,hasNextPage,hasPreviousPage}
+        res.json({allexpences,data});
     }catch(err){
         res.status(500).json({success:false,message:'error Something went wrong !'})
     }
@@ -50,50 +59,28 @@ exports.isPremium = (req,res,next)=>{
     res.status(200).json({isPremiumUser})
 }
 
+exports.getUrl = async(req,res,next)=>{
+    try{
+        const reports = await req.user.getReportUrls({attributes:['createdAt','url','id']});
+        res.status(200).json({success:true,reports})
+    }catch(err){
+        res.status(404).json({success:false})
+    }
+}
+
 exports.downloadExpense = async(req,res,next)=>{
     try{
         const userId = req.user.id;
-        const getUserExpences = await req.user.getExpences();
+        const getUserExpences = await userServices.userExpences(req);
         const stringifiedExpenses = JSON.stringify(getUserExpences);
         const filename = `expense${userId}/${new Date()}.txt`;
-        const fileUrl = await uploadToS3(stringifiedExpenses,filename);
-        console.log(new Date())
+        const fileUrl = await S3Services.uploadToS3(stringifiedExpenses,filename);
+        reportUrl.create({url:fileUrl,UserId:req.user.id});
         res.status(200).json({fileUrl , success:true})
     }catch(err){
+        console.log(err)
         res.status(500).json({fileUrl:'' , success:false})
     }
    
 }
 
-function uploadToS3(data , filename){
-    const BUCKET_NAME = 'expencetracker310';
-    const IAM_USER_KEY = 'AKIAVOLWZS3FGDC5YOEW';
-    const IAM_USER_SECRET = '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';
-
-    let s3bucket = new AWS.S3({
-        accessKeyId:IAM_USER_KEY,
-        secretAccessKey:IAM_USER_SECRET
-    })
-
-    
-        var param ={
-            Bucket: BUCKET_NAME,
-            Key: filename,
-            Body: data,
-            ACL: 'public-read'
-        }
-
-        return new Promise((resolve,reject)=>{
-            s3bucket.upload(param ,(err,s3response)=>{
-                if(err){
-                    console.log("somthing went wrong ",err)
-                    reject(err)
-                }else{
-                    console.log('success');
-                    resolve(s3response.Location);
-                }
-            })
-        })
-        
-
-}

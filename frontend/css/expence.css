@@ -52,6 +52,10 @@ select , input{
 #errorMsg{
     color:red;
 }
+#showReportsHistory{
+    display: flex;
+    flex-direction: column;
+}
 .expences{
     background-color: aquamarine;
     height: 40px;

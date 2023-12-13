@@ -8,6 +8,8 @@ const showLeaderboard = document.getElementById('showLeaderboard');
 const leaderboardLable = document.getElementById('leaderboardLable');
 const report = document.getElementById('report');
 const downloads = document.getElementById('download');
+const showReportsHistory = document.getElementById('showReportsHistory');
+const pageButton = document.getElementById('pageButton');
 
 // downloads.addEventListener('click',async()=>{
 //     try{
@@ -124,12 +126,40 @@ showExpences.addEventListener('click',async(e)=>{
 })
 
 window.addEventListener('DOMContentLoaded',async()=>{
-    const getExpenceData = await axios.get('http://localhost:3000/expence/getExpences',{headers:{'Authorization':token}});
-    if(getExpenceData.data.isPremium){
+    const getIsPremium = await axios.get('http://localhost:3000/expence/isPremiumUser',{headers:{'Authorization':token}});
+    if(getIsPremium.data.isPremiumUser){
         makePremium();
     }
+    const getExpenceData = await axios.get('http://localhost:3000/expence/getExpences?page=1',{headers:{'Authorization':token}});
+    for(let i =1 ;i<=getExpenceData.data.data.totalPage ;i++){
+        createPageButton(i);
+    }
     getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
+    const getReports = await axios.get('http://localhost:3000/expence/reportUrl',{headers:{'Authorization':token}})
+    getReports.data.reports.forEach((item)=>{
+        showReports(item)
+    })
 })
+
+pageButton.addEventListener('click',async(e)=>{
+
+    if(e.target.classList.contains('pages')){
+        const page = parseInt(e.target.id);
+        const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=${page}`,{headers:{'Authorization':token}});
+        const lengths = showExpences.children.length;
+        for(let i=1 ; i <=lengths ; i++){showExpences.removeChild(showExpences.children[0])};
+        getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
+    }
+})
+
+function showReports(data){
+    const a = document.createElement('a');
+    a.href = data.url;
+    a.innerText=data.createdAt;
+    showReportsHistory.appendChild(a)
+    
+}
+
 function makePremium(){
         const premium = document.getElementById('premium');
         const leaderboard = document.getElementById('leaderboard')
@@ -177,4 +207,12 @@ function createLeaderboard(name,amount){
     expenceDiv.appendChild(totalAmount);
 
     showLeaderboard.appendChild(expenceDiv)
+}
+
+function createPageButton(page){
+    const button = document.createElement('button');
+    button.innerText=page;
+    button.id = `${page}page`
+    button.className = 'pages'
+    pageButton.appendChild(button);
 }

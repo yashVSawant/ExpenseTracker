@@ -15,6 +15,7 @@ const expence = require('./model/expence');
 const user = require('./model/user');
 const order = require('./model/order');
 const resetPasswordRequest = require('./model/FPRequest');
+const reportUrl = require('./model/reportUrl')
 
 user.hasMany(expence);
 expence.belongsTo(user);
@@ -24,6 +25,9 @@ order.belongsTo(user);
 
 user.hasMany(resetPasswordRequest);
 resetPasswordRequest.belongsTo(user);
+
+user.hasMany(reportUrl);
+reportUrl.belongsTo(user);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
