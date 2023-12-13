@@ -162,6 +162,7 @@ pageButton.addEventListener('click',async(e)=>{
 
     if(e.target.classList.contains('pages')){
         const page = parseInt(e.target.id);
+        const limit = localStorage.getItem('limit') || 10;
         const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=${page}&limit=${limit}`,{headers:{'Authorization':token}});
         const lengths = showExpences.children.length;
         for(let i=1 ; i <=lengths ; i++){showExpences.removeChild(showExpences.children[0])};
@@ -189,40 +190,25 @@ function makePremium(){
 
 function createExpences(amount,description,category,id){
     const expenceDiv = document.createElement('div');
-    const expenceAmount = document.createElement('p');
-    const expenceDescrip = document.createElement('p');
-    const expenceCategory = document.createElement('p');
-    const del = document.createElement('button');
-
+    expenceDiv.innerHTML=`<p>amount :${amount}  |</p>
+    <p>description :${description}  |</p>
+    <p>category :${category}</p>
+    <button class='delete'>&#10060</button>
+    `
     expenceDiv.className = 'expences';
     expenceDiv.id = id;
-    expenceAmount.innerText = `amount :${amount}  |`;
-    expenceDescrip.innerText = `description :${description}  |`;
-    expenceCategory.innerText = `category :${category}  `;
-    del.innerHTML='&#10060'
-    del.className='delete'
-
-    expenceDiv.appendChild(expenceAmount)
-    expenceDiv.appendChild(expenceDescrip)
-    expenceDiv.appendChild(expenceCategory)
-    expenceDiv.appendChild(del)
-
+    
     showExpences.appendChild(expenceDiv)
     
 }
 
 function createLeaderboard(name,amount){
     const expenceDiv = document.createElement('div');
-    const getName = document.createElement('p');
-    const totalAmount = document.createElement('p');
-
     expenceDiv.className='premiumLeaderboard';
-    getName.innerText=`name :${name} -`;
-    totalAmount.innerText=`total amount:${amount}`;
-
-    expenceDiv.appendChild(getName);
-    expenceDiv.appendChild(totalAmount);
-
+    expenceDiv.innerHTML =`
+    <p>name :${name} -</p>
+    <p>total amount:${amount}</p>
+    `
     showLeaderboard.appendChild(expenceDiv)
 }
 

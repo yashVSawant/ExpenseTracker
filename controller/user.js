@@ -57,5 +57,5 @@ function isstringinvalid(getString){
 }
 
 function generateAccessToken(id,name,isPremium){
-    return jwt.sign({userId:id , name:name ,isPremium:isPremium},'yash');
+    return jwt.sign({userId:id , name:name ,isPremium:isPremium},process.env.TOKEN);
 }

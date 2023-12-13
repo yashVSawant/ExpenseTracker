@@ -1,6 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 
@@ -15,7 +19,12 @@ const expence = require('./model/expence');
 const user = require('./model/user');
 const order = require('./model/order');
 const resetPasswordRequest = require('./model/FPRequest');
-const reportUrl = require('./model/reportUrl')
+const reportUrl = require('./model/reportUrl');
+
+const accessLlogStrem = fs.createWriteStream(
+    path.join(__dirname,'access.log'),
+    {flages:'a'}
+);
 
 user.hasMany(expence);
 expence.belongsTo(user);
@@ -29,6 +38,8 @@ resetPasswordRequest.belongsTo(user);
 user.hasMany(reportUrl);
 reportUrl.belongsTo(user);
 
+app.use(helmet());
+app.use(morgan('combined',{stream: accessLlogStrem}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors());
