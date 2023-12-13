@@ -9,5 +9,7 @@ const expenceController = require('../controller/expence');
 route.get('/getExpences',authentication.authenticate,expenceController.getExpences);
 route.post('/postExpence',authentication.authenticate,expenceController.postExpence);
 route.delete('/deleteExpence',authentication.authenticate,expenceController.deleteExpence);
+route.get('/isPremiumUser',authentication.authenticate,expenceController.isPremium);
+route.get('/download',authentication.authenticate,expenceController.downloadExpense);
 
 module.exports = route;

@@ -6,49 +6,92 @@ const premium = document.getElementById('premiumButton')
 const leaderboard = document.getElementById('leaderboard');
 const showLeaderboard = document.getElementById('showLeaderboard');
 const leaderboardLable = document.getElementById('leaderboardLable');
+const report = document.getElementById('report');
+const downloads = document.getElementById('download');
+
+// downloads.addEventListener('click',async()=>{
+//     try{
+       
+//     }catch(err){
+//         alert('somthing went wrong while downloading')
+//     }
+    
+// })
+
+downloads.addEventListener('click',async()=>{
+    try{
+        const getIsPremium = await axios.get('http://localhost:3000/expence/isPremiumUser',{headers:{'Authorization':token}});
+        if(getIsPremium.data.isPremiumUser){
+            const docDownload = await axios.get('http://localhost:3000/expence/download',{headers:{'Authorization':token}});
+            if(docDownload.status === 200){
+                const a = document.createElement('a');
+                a.href=docDownload.data.fileUrl;
+                a.download = 'expense.csv';
+                a.click();
+            }else{
+                console.log('errr')
+            }
+        }else{
+            alert('you are not a premium user')
+        }
+    }catch(err){
+        alert('error')
+    }
+    
+})
 
 leaderboard.addEventListener('click',async()=>{
-    const result = await axios.get('http://localhost:3000/premium/getLeaderboard');
-    leaderboardLable.style.display='inline'
-    result.data.forEach(async(item)=>{
-        createLeaderboard(item.name,item.totalExpence)
-    }) 
+    try{
+        const result = await axios.get('http://localhost:3000/premium/getLeaderboard');
+        leaderboardLable.style.display='inline'
+        result.data.forEach(async(item)=>{
+            createLeaderboard(item.name,item.totalExpence)
+        })
+    }catch(err){
+        alert('error')
+    }
+     
     
 })
 // console.log(user)
 premium.onclick = async (e)=>{
-    console.log(token);
-    const response = await axios.get('http://localhost:3000/purchase/premiumMembership',{headers:{'Authorization':token}});
-    console.log(response);
-    const options ={
-        'key':response.data.key_id,
-        'order_id':response.data.order.id,
-        'handler':async function (response){
+    try{
+        // console.log(token);
+        const response = await axios.get('http://localhost:3000/purchase/premiumMembership',{headers:{'Authorization':token}});
+        // console.log(response);
+        const options ={
+            'key':response.data.key_id,
+            'order_id':response.data.order.id,
+            'handler':async function (response){
+                await axios.post('http://localhost:3000/purchase/updatePremiumMembership',{
+                    order_id:options.order_id,
+                    payment_id:response.razorpay_payment_id,
+                    status:'SUCCESS',
+                    isPremium:true
+                },{headers:{'Authorization':token}})
+
+                alert('you are a premium user now')
+                makePremium();
+            }
+        }
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+        e.preventDefault();
+
+        rzp1.on('payment.failed',async function (response){
+            console.log(response);
             await axios.post('http://localhost:3000/purchase/updatePremiumMembership',{
                 order_id:options.order_id,
-                payment_id:response.razorpay_payment_id,
-                status:'SUCCESS',
-                isPremium:true
-            },{headers:{'Authorization':token}})
-
-            alert('you are a premium user now')
-            makePremium();
-        }
+                payment_id:'null',
+                status:'FAILD',
+                isPremium:false
+                },{headers:{'Authorization':token}})
+            alert('transaction failed')
+        })
+    }catch(err){
+        alert('error')
     }
-    const rzp1 = new Razorpay(options);
-    rzp1.open();
-    e.preventDefault();
-
-    rzp1.on('payment.failed',async function (response){
-        console.log(response);
-        await axios.post('http://localhost:3000/purchase/updatePremiumMembership',{
-            order_id:options.order_id,
-            payment_id:'null',
-            status:'FAILD',
-            isPremium:false
-            },{headers:{'Authorization':token}})
-        alert('transaction failed')
-    })
+    
 }
 
 
