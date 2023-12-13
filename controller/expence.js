@@ -23,16 +23,19 @@ exports.postExpence = async(req,res,next)=>{
 exports.getExpences = async(req,res,next)=>{
     try{
         const currentPage = req.query.page;
-        const offset = (currentPage-1)* 10 ;
+        const limit = +req.query.limit;
+        // console.log('limit&page',limit , currentPage)
+        const offset = (currentPage-1)* limit ;
         const totalExpenses = await req.user.countExpences();
-        const hasNextPage = (offset+10) < totalExpenses 
+        const hasNextPage = (offset+limit) < totalExpenses 
         const hasPreviousPage = currentPage>1 
-        const totalPage = Math.ceil(totalExpenses/10);
-        console.log('totalPage',totalPage);
-        const allexpences = await req.user.getExpences({limit: 10,offset:offset});
-        const data = {currentPage,totalPage,hasNextPage,hasPreviousPage}
+        const totalPage = Math.ceil(totalExpenses/limit);
+        // console.log('totalPage',totalPage);
+        const allexpences = await req.user.getExpences({limit: limit,offset:offset});
+        const data = {currentPage,totalPage,hasNextPage,hasPreviousPage,totalExpenses}
         res.json({allexpences,data});
     }catch(err){
+        console.log(err)
         res.status(500).json({success:false,message:'error Something went wrong !'})
     }
 }

@@ -10,15 +10,30 @@ const report = document.getElementById('report');
 const downloads = document.getElementById('download');
 const showReportsHistory = document.getElementById('showReportsHistory');
 const pageButton = document.getElementById('pageButton');
+const setPages = document.getElementById('setPages');
 
-// downloads.addEventListener('click',async()=>{
-//     try{
-       
-//     }catch(err){
-//         alert('somthing went wrong while downloading')
-//     }
+setPages.addEventListener('click',async(e)=>{
+    if(e.target.classList.contains('setButton')){
+        const setLimit = parseInt(e.target.id)
+        localStorage.setItem('limit',setLimit)
+        setPages.innerHTML='set pages';
+        showExpences.innerHTML='';
+        const limit = localStorage.getItem('limit') || 10;
+        const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
+        
+        getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
     
-// })
+    }else{
+        setPages.innerHTML=`
+        <div>
+        <button class='setButton' id='5set'>5</button>
+        <button class='setButton' id='8set'>8</button>
+        <button class='setButton' id='10set'>10</button>
+        <button class='setButton' id='15set'>15</button>
+        <button class='setButton' id='20set'>20</button>
+        </div>`
+    }
+})
 
 downloads.addEventListener('click',async()=>{
     try{
@@ -126,14 +141,16 @@ showExpences.addEventListener('click',async(e)=>{
 })
 
 window.addEventListener('DOMContentLoaded',async()=>{
+    const limit = localStorage.getItem('limit') || 10;
     const getIsPremium = await axios.get('http://localhost:3000/expence/isPremiumUser',{headers:{'Authorization':token}});
     if(getIsPremium.data.isPremiumUser){
         makePremium();
     }
-    const getExpenceData = await axios.get('http://localhost:3000/expence/getExpences?page=1',{headers:{'Authorization':token}});
+    const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
     for(let i =1 ;i<=getExpenceData.data.data.totalPage ;i++){
         createPageButton(i);
     }
+
     getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
     const getReports = await axios.get('http://localhost:3000/expence/reportUrl',{headers:{'Authorization':token}})
     getReports.data.reports.forEach((item)=>{
@@ -145,7 +162,7 @@ pageButton.addEventListener('click',async(e)=>{
 
     if(e.target.classList.contains('pages')){
         const page = parseInt(e.target.id);
-        const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=${page}`,{headers:{'Authorization':token}});
+        const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=${page}&limit=${limit}`,{headers:{'Authorization':token}});
         const lengths = showExpences.children.length;
         for(let i=1 ; i <=lengths ; i++){showExpences.removeChild(showExpences.children[0])};
         getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
@@ -216,3 +233,4 @@ function createPageButton(page){
     button.className = 'pages'
     pageButton.appendChild(button);
 }
+
