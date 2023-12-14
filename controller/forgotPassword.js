@@ -9,15 +9,15 @@ require('dotenv').config();
 
 exports.forgotPassword =async (req,res,next)=>{
     const userMail = req.body.email;
-    // console.log(userMail);
+    console.log(userMail);
     let apiKey = client.authentications['api-key'];
     apiKey.apiKey = process.env.SIB_API_KEY;
     const tranEmailApi = new Sib.TransactionalEmailsApi();
-//    console.log('1')
+   console.log('1')
     const sender = {
         email:process.env.EMAIL
     }
-    // console.log('2')
+    console.log('2')
     const receivers =[
         {email:userMail},
     ]
@@ -26,7 +26,7 @@ exports.forgotPassword =async (req,res,next)=>{
         if(!requestUser) throw new Error(JSON.stringify(err));
         const createRequest = await resetPasswordRequest.create({UserId:requestUser.id,isActive:true});
         // console.log(createRequest , createRequest.id );
-        // console.log(user.id);
+        console.log(requestUser.id);
         await tranEmailApi.sendTransacEmail({
             sender,
             to:receivers,

@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
-
+require('dotenv').config();
 const app = express();
 
 const sequelize = require('./util/database');
