@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const helmet = require('helmet');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
@@ -38,7 +37,6 @@ resetPasswordRequest.belongsTo(user);
 user.hasMany(reportUrl);
 reportUrl.belongsTo(user);
 
-app.use(helmet());
 app.use(morgan('combined',{stream: accessLlogStrem}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
