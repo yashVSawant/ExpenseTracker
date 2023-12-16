@@ -19,7 +19,7 @@ setPages.addEventListener('click',async(e)=>{
         setPages.innerHTML='set pages';
         showExpences.innerHTML='';
         const limit = localStorage.getItem('limit') || 10;
-        const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
+        const getExpenceData = await axios.get(`http://23.20.207.198:3000/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
         
         getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
     
@@ -37,9 +37,9 @@ setPages.addEventListener('click',async(e)=>{
 
 downloads.addEventListener('click',async()=>{
     try{
-        const getIsPremium = await axios.get('http://localhost:3000/expence/isPremiumUser',{headers:{'Authorization':token}});
+        const getIsPremium = await axios.get('http://23.20.207.198:3000/expence/isPremiumUser',{headers:{'Authorization':token}});
         if(getIsPremium.data.isPremiumUser){
-            const docDownload = await axios.get('http://localhost:3000/expence/download',{headers:{'Authorization':token}});
+            const docDownload = await axios.get('http://23.20.207.198:3000/expence/download',{headers:{'Authorization':token}});
             if(docDownload.status === 200){
                 const a = document.createElement('a');
                 a.href=docDownload.data.fileUrl;
@@ -59,7 +59,7 @@ downloads.addEventListener('click',async()=>{
 
 leaderboard.addEventListener('click',async()=>{
     try{
-        const result = await axios.get('http://localhost:3000/premium/getLeaderboard');
+        const result = await axios.get('http://23.20.207.198:3000/premium/getLeaderboard');
         leaderboardLable.style.display='inline'
         result.data.forEach(async(item)=>{
             createLeaderboard(item.name,item.totalExpence)
@@ -74,13 +74,13 @@ leaderboard.addEventListener('click',async()=>{
 premium.onclick = async (e)=>{
     try{
         // console.log(token);
-        const response = await axios.get('http://localhost:3000/purchase/premiumMembership',{headers:{'Authorization':token}});
+        const response = await axios.get('http://23.20.207.198:3000/purchase/premiumMembership',{headers:{'Authorization':token}});
         // console.log(response);
         const options ={
             'key':response.data.key_id,
             'order_id':response.data.order.id,
             'handler':async function (response){
-                await axios.post('http://localhost:3000/purchase/updatePremiumMembership',{
+                await axios.post('http://23.20.207.198:3000/purchase/updatePremiumMembership',{
                     order_id:options.order_id,
                     payment_id:response.razorpay_payment_id,
                     status:'SUCCESS',
@@ -97,7 +97,7 @@ premium.onclick = async (e)=>{
 
         rzp1.on('payment.failed',async function (response){
             console.log(response);
-            await axios.post('http://localhost:3000/purchase/updatePremiumMembership',{
+            await axios.post('http://23.20.207.198:3000/purchase/updatePremiumMembership',{
                 order_id:options.order_id,
                 payment_id:'null',
                 status:'FAILD',
@@ -131,7 +131,7 @@ showExpences.addEventListener('click',async(e)=>{
     if(e.target.classList.contains('delete')){
         try{
             const id = e.target.parentNode.id;
-            await axios.delete(`http://localhost:3000/expence/deleteExpence?id=${id}`,{headers:{'Authorization':token}});
+            await axios.delete(`http://23.20.207.198:3000/expence/deleteExpence?id=${id}`,{headers:{'Authorization':token}});
             const expenceDiv = document.getElementById(`${id}`);
             showExpences.removeChild(expenceDiv);
         }catch(err){
@@ -142,17 +142,17 @@ showExpences.addEventListener('click',async(e)=>{
 
 window.addEventListener('DOMContentLoaded',async()=>{
     const limit = localStorage.getItem('limit') || 10;
-    const getIsPremium = await axios.get('http://localhost:3000/expence/isPremiumUser',{headers:{'Authorization':token}});
+    const getIsPremium = await axios.get('http://23.20.207.198:3000/expence/isPremiumUser',{headers:{'Authorization':token}});
     if(getIsPremium.data.isPremiumUser){
         makePremium();
     }
-    const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
+    const getExpenceData = await axios.get(`http://23.20.207.198:3000/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
     for(let i =1 ;i<=getExpenceData.data.data.totalPage ;i++){
         createPageButton(i);
     }
 
     getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
-    const getReports = await axios.get('http://localhost:3000/expence/reportUrl',{headers:{'Authorization':token}})
+    const getReports = await axios.get('http://23.20.207.198:3000/expence/reportUrl',{headers:{'Authorization':token}})
     getReports.data.reports.forEach((item)=>{
         showReports(item)
     })
@@ -163,7 +163,7 @@ pageButton.addEventListener('click',async(e)=>{
     if(e.target.classList.contains('pages')){
         const page = parseInt(e.target.id);
         const limit = localStorage.getItem('limit') || 10;
-        const getExpenceData = await axios.get(`http://localhost:3000/expence/getExpences?page=${page}&limit=${limit}`,{headers:{'Authorization':token}});
+        const getExpenceData = await axios.get(`http://23.20.207.198:3000/expence/getExpences?page=${page}&limit=${limit}`,{headers:{'Authorization':token}});
         const lengths = showExpences.children.length;
         for(let i=1 ; i <=lengths ; i++){showExpences.removeChild(showExpences.children[0])};
         getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))

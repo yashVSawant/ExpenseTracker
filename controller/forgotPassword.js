@@ -25,14 +25,14 @@ exports.forgotPassword =async (req,res,next)=>{
         const requestUser = await user.findOne({where:{email:userMail}})
         if(!requestUser) throw new Error(JSON.stringify(err));
         const createRequest = await resetPasswordRequest.create({UserId:requestUser.id,isActive:true});
-        // console.log(createRequest , createRequest.id );
+        console.log("createRequest ",createRequest.id );
         console.log(requestUser.id);
         await tranEmailApi.sendTransacEmail({
             sender,
             to:receivers,
             subject:'reset password link',
             textContent:`
-            checking msg http://localhost:3000/password/resetpassword/${createRequest.id}
+            checking msg http://23.20.207.198:3000/password/resetpassword/${createRequest.id}
             `
             
         })
