@@ -1,8 +1,5 @@
-const Sequelize = require('sequelize');
-const expence = require('../model/expence');
 const user = require('../model/user')
-const order = require('../model/order');
-const sequelize = require('../util/database');
+
 
 exports.getLeaderboard = async(req,res)=>{
     try{
@@ -16,6 +13,3 @@ exports.getLeaderboard = async(req,res)=>{
     }
 }
 
-exports.getUserData = (req,res)=>{
-  
-}
