@@ -12,4 +12,3 @@ exports.getLeaderboard = async(req,res)=>{
         res.status(404).json({success:false,error:err})
     }
 }
-
