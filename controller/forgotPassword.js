@@ -36,7 +36,7 @@ exports.forgotPassword =async (req,res,next)=>{
             `
             
         })
-        res.send('forgotPassword')
+        res.status(200).send('forgotPassword')
     }catch(err){
         console.log('error from forgot password>>>')
         res.status(400).json({success:false,error:err})
@@ -51,10 +51,11 @@ exports.resetPassword = async(req,res,next)=>{
         if(userRequest && userRequest.isActive){
             res.sendFile(path.join(__dirname,'..','frontend','html','resetPassword.html'))
         }else{
-            res.send('no request found')
+            res.status(404).send('no request found')
         }
     }catch(err){
         console.log(err);
+        res.status(404).send('something went wrong!');
     }
 }
 
@@ -83,6 +84,7 @@ exports.setNewPassword = async(req,res)=>{
         }
     }catch(err){
         console.log(err)
+        res.status(403).send('something went wrong!');
     }
    
 }

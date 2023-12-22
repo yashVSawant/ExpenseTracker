@@ -14,7 +14,7 @@ signup.addEventListener('click',async(e)=>{
                 password:password.value,
                 isPremium:false
             }
-            await axios.post('http://23.20.207.198:3000/user/signup',signupDetails);
+            await axios.post('http://localhost:3000/user/signup',signupDetails);
             alert('User signup successfully');
             window.location.href = '../html/login.html';
         }catch(err){

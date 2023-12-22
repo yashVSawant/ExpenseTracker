@@ -12,7 +12,7 @@ login.addEventListener('click',async(e)=>{
                 email:email.value,
                 password:password.value
             }
-            const getloginPost = await axios.post('http://23.20.207.198:3000/user/login',loginDetails);
+            const getloginPost = await axios.post('http://localhost:3000/user/login',loginDetails);
             const token = getloginPost.data.token;
             console.log(token);
             clearInputFields();    

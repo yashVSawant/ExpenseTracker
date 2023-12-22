@@ -16,7 +16,7 @@ exports.postExpence = async(req,res,next)=>{
         res.json(getPostExpence);
     }catch(err){
         await t.rollback();
-        res.status(500).json({success:false , message:'error Something went wrong !'})
+        res.status(200).status(500).json({success:false , message:'error Something went wrong !'})
     }
 }
 
@@ -33,7 +33,7 @@ exports.getExpences = async(req,res,next)=>{
         // console.log('totalPage',totalPage);
         const allexpences = await req.user.getExpences({limit: limit,offset:offset});
         const data = {currentPage,totalPage,hasNextPage,hasPreviousPage,totalExpenses}
-        res.json({allexpences,data});
+        res.status(200).json({allexpences,data});
     }catch(err){
         console.log(err)
         res.status(500).json({success:false,message:'error Something went wrong !'})
@@ -50,7 +50,7 @@ exports.deleteExpence = async(req,res,next)=>{
         await getExpence[0].destroy({transaction:t});
         await req.user.update({totalExpence:previousAmount-getAmount},{transaction:t});
         await t.commit();
-        res.json({success:true})
+        res.status(201).json({success:true})
     }catch(err){
         await t.rollback();
         console.log(err)
