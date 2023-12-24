@@ -9,7 +9,7 @@ exports.postSignupInfo = (req,res,next)=>{
         }
         const saltRound = 10;
         bcrypt.hash(password,saltRound,async(err,hash)=>{
-            console.log('error from user.controller>>>',err);
+            // console.log('error from user.controller>>>',err);
             try{
                 await user.create({
                     name,

@@ -32,7 +32,7 @@ exports.forgotPassword =async (req,res,next)=>{
             to:receivers,
             subject:'reset password link',
             textContent:`
-            checking msg http://23.20.207.198:3000/password/resetpassword/${createRequest.id}
+            checking msg http://184.73.124.55:3000/password/resetpassword/${createRequest.id}
             `
             
         })
