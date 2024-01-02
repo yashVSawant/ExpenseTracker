@@ -39,11 +39,13 @@ resetPasswordRequest.belongsTo(user);
 user.hasMany(reportUrl);
 reportUrl.belongsTo(user);
 
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false,
+  }));
 app.use(morgan('combined',{stream: accessLogStrem}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cors());
+app.use(cors({origin:'*'}));
 app.use(express.static('frontend'));
 
 app.use('/user',userRoute);
@@ -52,7 +54,8 @@ app.use('/purchase',authenticateRoute);
 app.use('/premium',premiumRoute);
 app.use('/password',passwordRoute);
 app.use((req,res)=>{
-    res.sendFile(path.join(__dirname,`frontend/html/${req.url}`))
+    console.log(req.url);
+    res.sendFile(path.join(__dirname,`frontend/${req.url}`))
 })
 
 app.use((req,res,next)=>{

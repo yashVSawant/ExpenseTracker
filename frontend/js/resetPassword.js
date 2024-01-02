@@ -12,7 +12,7 @@ reset.addEventListener('click',()=>{
             const path = url.split('/');
             const id = path[path.length-1];
             console.log(id);
-            axios.post('http://184.73.124.55:3000/password/setNewPassword',{password,id}).then(res=>{
+            axios.post('/password/setNewPassword',{password,id}).then(res=>{
             alert(res.data);
             });
         }else{
