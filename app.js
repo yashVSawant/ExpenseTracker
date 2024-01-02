@@ -42,6 +42,7 @@ reportUrl.belongsTo(user);
 app.use(helmet({
     contentSecurityPolicy: false,
   }));
+  
 app.use(morgan('combined',{stream: accessLogStrem}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
