@@ -14,11 +14,11 @@ login.addEventListener('click',async(e)=>{
             }
             const getloginPost = await axios.post('/user/login',loginDetails);
             const token = getloginPost.data.token;
-            console.log(token);
+            console.log("login",token);
             clearInputFields();    
             alert(`${getloginPost.data.message}`);
             localStorage.setItem('token',token);
-            window.location.href = '../html/expence.html';
+            window.location.href = '../html/expense.html';
         }catch(err){
             console.log(err)
             errorMsg.innerText =`${err.message}`;

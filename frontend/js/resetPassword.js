@@ -14,6 +14,9 @@ reset.addEventListener('click',()=>{
             console.log(id);
             axios.post('/password/setNewPassword',{password,id}).then(res=>{
             alert(res.data);
+            })
+            .catch((err)=>{
+                console.log(err)
             });
         }else{
             errormsg.innerText="passwords didn't match";
