@@ -4,7 +4,7 @@ const authentication = require('../middleware/authentication');
 
 const route = express.Router();
 
-const expenceController = require('../controller/expence');
+const expenceController = require('../controller/expense');
 
 route.get('/getExpences',authentication.authenticate,expenceController.getExpences);
 route.post('/postExpence',authentication.authenticate,expenceController.postExpence);

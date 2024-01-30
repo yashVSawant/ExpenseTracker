@@ -16,11 +16,10 @@ setPages.addEventListener('click',async(e)=>{
     if(e.target.classList.contains('setButton')){
         const setLimit = parseInt(e.target.id)
         localStorage.setItem('limit',setLimit)
-        setPages.innerHTML='set pages';
+        setPages.innerHTML='Set limit';
         showExpences.innerHTML='';
         const limit = localStorage.getItem('limit') || 10;
         const getExpenceData = await axios.get(`/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
-        
         getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
     
     }else{
@@ -62,7 +61,7 @@ leaderboard.addEventListener('click',async()=>{
         const result = await axios.get('/premium/getLeaderboard');
         leaderboardLable.style.display='inline'
         result.data.forEach(async(item)=>{
-            createLeaderboard(item.name,item.totalExpence)
+            createLeaderboard(item.name,item.totalExpense)
         })
     }catch(err){
         alert('error')
@@ -75,7 +74,7 @@ premium.onclick = async (e)=>{
     try{
         // console.log(token);
         const response = await axios.get('/purchase/premiumMembership',{headers:{'Authorization':token}});
-        // console.log(response);
+        console.log(response);
         const options ={
             'key':response.data.key_id,
             'order_id':response.data.order.id,
@@ -96,7 +95,7 @@ premium.onclick = async (e)=>{
         e.preventDefault();
 
         rzp1.on('payment.failed',async function (response){
-            console.log(response);
+            // console.log(response);
             await axios.post('/purchase/updatePremiumMembership',{
                 order_id:options.order_id,
                 payment_id:'null',
@@ -119,9 +118,9 @@ addExpence.addEventListener('click',async(e)=>{
         const amount = document.getElementById('amount').value;
         const decription = document.getElementById('decription').value;
         const category = document.getElementById('category').value;
-        console.log(amount , decription , category);
+        // console.log(amount , decription , category);
         const getPostExpence = await axios.post('/expence/postExpence',{amount , decription , category},{headers:{'Authorization':token}})
-        createExpences(amount , decription , category,getPostExpence.data.id)
+        createExpences(amount , decription , category,getPostExpence.data._id)
     }catch(err){
         console.log(err)
     }    
@@ -141,21 +140,26 @@ showExpences.addEventListener('click',async(e)=>{
 })
 
 window.addEventListener('DOMContentLoaded',async()=>{
-    const limit = localStorage.getItem('limit') || 10;
-    const getIsPremium = await axios.get('/expence/isPremiumUser',{headers:{'Authorization':token}});
-    if(getIsPremium.data.isPremiumUser){
-        makePremium();
-    }
-    const getExpenceData = await axios.get(`/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
-    for(let i =1 ;i<=getExpenceData.data.data.totalPage ;i++){
-        createPageButton(i);
-    }
+    try{
+        const limit = localStorage.getItem('limit') || 10;
+        const getIsPremium = await axios.get('/expence/isPremiumUser',{headers:{'Authorization':token}});
+        if(getIsPremium.data.isPremiumUser){
+            makePremium();
+        }
+        const getExpenceData = await axios.get(`/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
+        for(let i =1 ;i<=getExpenceData.data.data.totalPage ;i++){
+            createPageButton(i);
+        }
 
-    getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
-    const getReports = await axios.get('/expence/reportUrl',{headers:{'Authorization':token}})
-    getReports.data.reports.forEach((item)=>{
-        showReports(item)
-    })
+        getExpenceData.data.allexpences.forEach(({_id,amount,decription,category})=>createExpences(amount,decription,category,_id))
+        const getReports = await axios.get('/expence/reportUrl',{headers:{'Authorization':token}})
+        getReports.data.reports.forEach((item)=>{
+            showReports(item)
+        })
+    }catch(err){
+        console.log(err)
+    }
+    
 })
 
 pageButton.addEventListener('click',async(e)=>{

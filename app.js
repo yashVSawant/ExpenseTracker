@@ -9,14 +9,15 @@ require('dotenv').config();
 
 const app = express();
 
+const mongoose = require('mongoose');
 const sequelize = require('./util/database');
 const userRoute = require('./route/user');
-const expenceRoute = require('./route/expence');
+const expenceRoute = require('./route/expense');
 const authenticateRoute = require('./route/purchase');
 const premiumRoute = require('./route/premium');
 const passwordRoute = require('./route/password');
 
-const expence = require('./model/expence');
+const expence = require('./model/expense');
 const user = require('./model/user');
 const order = require('./model/order');
 const resetPasswordRequest = require('./model/FPRequest');
@@ -24,24 +25,25 @@ const reportUrl = require('./model/reportUrl');
 
 const accessLogStrem = fs.createWriteStream(
     path.join(__dirname,'access.log'),
-    {flages:'a'}
+    {flags:'a'}
 );
 
-user.hasMany(expence);
-expence.belongsTo(user);
+// user.hasMany(expence);
+// expence.belongsTo(user);
 
-user.hasMany(order);
-order.belongsTo(user);
+// user.hasMany(order);
+// order.belongsTo(user);
 
-user.hasMany(resetPasswordRequest);
-resetPasswordRequest.belongsTo(user);
+// user.hasMany(resetPasswordRequest);
+// resetPasswordRequest.belongsTo(user);
 
-user.hasMany(reportUrl);
-reportUrl.belongsTo(user);
+// user.hasMany(reportUrl);
+// reportUrl.belongsTo(user);
 
 app.use(helmet({
     contentSecurityPolicy: false,
   }));
+  
 app.use(morgan('combined',{stream: accessLogStrem}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -62,9 +64,16 @@ app.use((req,res,next)=>{
     res.status(404).send('Error: 404');
 })
 
-sequelize
-.sync()
+// sequelize
+// .sync()
+// .then(()=>{
+//     app.listen(3000);
+// })
+// .catch(err=>console.log(err));
+
+mongoose.connect('mongodb+srv://yash:0H5MGRs1p5S68cVo@cluster0.y35knxu.mongodb.net/expenseTracker?retryWrites=true&w=majority')
 .then(()=>{
+    console.log('conntected');
     app.listen(3000);
 })
 .catch(err=>console.log(err));

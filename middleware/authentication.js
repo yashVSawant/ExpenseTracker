@@ -9,7 +9,7 @@ const authenticate = async(req,res,next)=>{
         // console.log("get>>>>",token)
         const user = jwt.verify(token,process.env.TOKEN);
         // console.log('token >>>',user);
-        const getUser = await User.findByPk(user.userId);
+        const getUser = await User.findById(user.userId);
         req.user = getUser;
         next();
     }catch(err){

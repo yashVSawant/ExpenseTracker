@@ -1,7 +1,6 @@
 const Razorpay = require('razorpay');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const order = require('../model/order');
 
 const purchasePremium = async (req,res)=>{
     try{
@@ -10,30 +9,38 @@ const purchasePremium = async (req,res)=>{
             key_id:process.env.RAZORPAY_KEY_ID,
             key_secret:process.env.RAZORPAY_KEY_SECRET
         })
-        const amount = 2500;
+        const amount = 5500;
         // console.log(amount);
         rzp.orders.create({amount,currency:'INR'},(err ,order)=>{
-            if(err){
-                throw new Error(JSON.stringify(err))
-            }
-            req.user.createOrder({orderId:order.id , status:'pending'})
-            .then(()=>{
-                return res.status(201).json({order ,key_id : rzp.key_id})
-            }).catch(err=>{
-                throw new Error(err)
-            })
-        })         
+                if(err){
+                    throw new Error(JSON.stringify(err))
+                }
+                req.user.order.orderId=order.id;
+                req.user.order.status='pending';
+                req.user.save()
+                .then(()=>{
+                    return res.status(201).json({order ,key_id : rzp.key_id})
+                })
+                .catch((err)=>{
+                    console.log(err)
+                    throw new Error(err)
+                })
+            })      
         
     }catch(err){
+        // console.log(err)
         res.status(400).json({success:false,message:'something went wrong in purchase!'})
     }
 }
 const updatePremium = async(req,res)=>{
     try{
-        const gotOrder = await req.user.getOrders({where:{orderId:req.body.order_id}});
-        const upateOrder = gotOrder[0].update({paymentId:req.body.payment_id,status:req.body.status});
-        const updateUser = req.user.update({isPremium:req.body.isPremium})
-        await Promise.all([upateOrder,updateUser]);
+        
+        const {payment_id,status,isPremium} = req.body;
+        // console.log(payment_id,status,isPremium)
+        req.user.order.paymentId = payment_id;
+        req.user.order.status = status;
+        req.user.isPremium = isPremium;
+        await req.user.save();
         res.status(200).json({success:true ,token:generateAccessToken(req.user.id,req.user.name,req.user.isPremium)})
     }catch(err){
         res.status(400).json({success:false,message:'something went wrong in updatePremium!'})

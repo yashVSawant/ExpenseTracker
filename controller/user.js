@@ -1,4 +1,4 @@
-const user = require('../model/user');
+const User = require('../model/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -9,15 +9,9 @@ exports.postSignupInfo = (req,res,next)=>{
         }
         const saltRound = 10;
         bcrypt.hash(password,saltRound,async(err,hash)=>{
-            // console.log('error from user.controller>>>',err);
             try{
-                await user.create({
-                    name,
-                    email,
-                    password:hash,
-                    isPremium,
-                    totalExpence:0
-                });
+                const user = new User({name:name,email:email,password:hash,isPremium:isPremium,totalExpense:0})
+                 user.save();
                 res.status(201).send('User signup successfully');
             }catch(err){
                 res.status(403).send('email already exist');
@@ -31,14 +25,14 @@ exports.checkEmailAndPassword = async(req,res,next)=>{
         if(isstringinvalid(email) || isstringinvalid(password)){
             return res.status(400).json({err:'bad parameter : somthing went wrong'})
         }
-        const checkUser = await user.findOne({where:{email:email}});
+        const checkUser = await User.find({'email':email});
         if(checkUser){
-            bcrypt.compare(password,checkUser.password,(err,result)=>{
+            bcrypt.compare(password,checkUser[0].password,(err,result)=>{
                 if(err){
                     res.status(500).json({success:false ,message:'something went wrong !'})                   
                 }
-                if(result){
-                    res.status(201).json({success:true ,message:'User login succesfull',token:generateAccessToken(checkUser.id,checkUser.name,checkUser.isPremium)})
+                else if(result){
+                    res.status(201).json({success:true ,message:'User login succesfull',token:generateAccessToken(checkUser[0].id,checkUser[0].name,checkUser[0].isPremium)})
                 }else{
                     res.status(401).json({success:false ,message:'incorrect password !'})
                 }
