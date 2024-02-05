@@ -1,16 +1,13 @@
-const Expense = require('../model/expense');
 const User = require('../model/user');
-const reportUrl = require('../model/reportUrl');
 const mongoose = require('mongoose');
-const userServices = require('../services/userExpences');
 const S3Services = require('../services/S3Services');
 
 exports.postExpence = async(req,res,next)=>{
     try{
-        const {amount , decription , category} = req.body;
+        const {amount , description , category} = req.body;
         const previousAmount = req.user.totalExpense;
         req.user.totalExpense =previousAmount + +amount;
-        const newExpense = req.user.expense.push({amount:amount,description:decription,category:category});
+        const newExpense = req.user.expense.push({amount:amount,description:description,category:category});
         await req.user.save();
         res.json(newExpense);
     }catch(err){
@@ -20,20 +17,40 @@ exports.postExpence = async(req,res,next)=>{
 
 exports.getExpences = async(req,res,next)=>{
     try{
-        const currentPage = req.query.page;
-        const limit = +req.query.limit;
-        const offset = (currentPage-1)* limit ;
+        const {page,limit} = req.query;
+        
+        const offset = (page-1)* limit ;
         const totalExpense = req.user.expense.length;
         const hasNextPage = (offset+limit) < totalExpense
-        const hasPreviousPage = currentPage>1 
+        const hasPreviousPage = page>1 
         const totalPage = Math.ceil(totalExpense/limit);
         const allexpences = req.user.expense.splice(offset,limit);
-        const data = {currentPage,totalPage,hasNextPage,hasPreviousPage,totalExpense}
+        const data = {page,totalPage,hasNextPage,hasPreviousPage,totalExpense}
         res.status(200).json({allexpences,data});
     }catch(err){
         console.log(err)
         res.status(500).json({success:false,message:'error Something went wrong !'})
     }
+}
+exports.getTotalExpense = async(req,res,next)=>{
+    const totalYearData = req.user.expense.filter((expense)=>{
+        const today = new Date();
+        const startOfYear = new Date(today.getFullYear(),0);
+        return  expense.createdAt > startOfYear;
+    });
+    const totalMonthData = totalYearData.filter((expense)=>{
+        const today = new Date()
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        return   (expense.createdAt > startOfMonth )
+    })
+    const totalDay = totalMonthData.filter((expense)=>{
+        const today = new Date();
+        const startOfDay = new Date(today.getFullYear(),today.getMonth(), today.getDate(), 1);
+        return  expense.createdAt > startOfDay
+    }).map((item)=>item.amount).reduce((a,b)=>a+b,0);
+    const totalYear = totalYearData.map((item)=>item.amount).reduce((a,b)=>a+b,0);
+    const totalMonth = totalMonthData.map((item)=>item.amount).reduce((a,b)=>a+b,0);
+    res.status(200).json({totalDay,totalMonth,totalYear});
 }
 
 exports.deleteExpence = async(req,res,next)=>{
@@ -52,6 +69,25 @@ exports.deleteExpence = async(req,res,next)=>{
     }catch(err){
         await session.abortTransaction();
         console.log(err)
+    }
+}
+
+exports.updateExpence = async(req,res,next)=>{
+    const id = req.query.id;
+    const {amount , description , category} = req.body;
+    try{
+        const getExpense = req.user.expense.find((expense)=>expense._id.toString()===id.toString())
+        const previousAmount = req.user.totalExpense;
+        const getAmount = getExpense.amount;
+        getExpense.amount=amount;
+        getExpense.description = description;
+        getExpense.category = category;
+        req.user.totalExpense = previousAmount-getAmount;
+        req.user.totalExpense += amount;
+        await req.user.save()
+        res.status(201).json({success:true})
+    }catch(err){
+        res.status(500).json({success:false})
     }
 }
 

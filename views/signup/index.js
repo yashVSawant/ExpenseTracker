@@ -16,7 +16,7 @@ signup.addEventListener('click',async(e)=>{
             }
             await axios.post('/user/signup',signupDetails);
             alert('User signup successfully');
-            window.location.href = '../html/login.html';
+            window.location.href = '../login/index.html';
         }catch(err){
             console.log(err)
             errorMsg.innerText =`${err.response.data}`

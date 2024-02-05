@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expence</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+       
+    
+    <div id="container">
+        <div id="main" >
+                <nav>
+                    <h2>Day to Day Expences</h2>
+                </nav>
+                <div id="secondContainer">
+                    <form id="mainFormDiv">
+                        <div id="mainForm">
+                            <div id="inputDiv">
+                                <lable>Amount :</lable>
+                                <input type="number" id="amount" name="amount">
+                                <lable>Decription :</lable>
+                                <input type="text" id="decription" name="decription">
+                                <label>Category :</label> 
+                                <select class="select" id="category" name="category">
+                                    <option name="option1" name="food">food</option>
+                                    <option name="option1" name="grocery">grocery</option>
+                                    <option name="option1" name="fuel">fuel</option>
+                                    <option name="option1" name="travel">travel</option>
+                                    <option name="option1" name="entertainment">entertainment</option>
+                                </select>
+                            </div>
+                            <div id="addButtonDiv">
+                                <button  id="addExpence">Add Expence</button>
+                            </div>
+                            <div id="editButtonDiv" style="display: none;">
+                                <button id="updateExpence">Update Expence</button>
+                                <button  id="cancelUpdate">Cancel</button>
+                            </div>
+                            
+                        </div>
+                        
+                    </form>
+                    <div id="showTotal">
+                        <div><p>year Expense</p><p id="totalYear"></p></div>
+                        <div><p>month Expense</p><p id="totalMonth"></p></div>
+                        <div><p>day Expense</p><p id="totalDay"></p></div>
+                    </div>
+                </div>
+            <div id="premium">
+                <button id="premiumButton">Premium</button>
+                <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            </div>
+            <button id="leaderboard" class="showLeaderBoard" style="display: none;">Leaderboard</button>
+            <button id="download">Download</button>
+           <div id="showExpences"></div>
+           <div id="pageButton"></div>
+           <div id="premiumFeature">
+                <lable id="leaderboardLable" style="display: none;">leaderboard</lable>
+                <div id="showLeaderboard"></div>
+                <button id="setPages">Set limit</button>
+                <div id="reportButtonDiv"><div id="report">Report</div></div>
+           </div>
+        </div>
+        <div id="showReportsHistory">
+            
+        </div>
+    </div>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>

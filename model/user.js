@@ -12,10 +12,12 @@ const userSchema = new Schema({
     expense:[{
         amount:{type:Schema.Types.Number,require:true},
         description:{type:Schema.Types.String,require:true},
-        category:{type:Schema.Types.String,require:true}
+        category:{type:Schema.Types.String,require:true},
+        createdAt: {type:Date,default: Date.now}
     }],
     reportUrl:[{
-        url:{type:Schema.Types.String,require:true}
+        url:{type:Schema.Types.String,require:true},
+        createdAt: {type:Date,default: Date.now}
     }],
     order:{
         paymentId:{type:Schema.Types.String},
@@ -32,20 +34,3 @@ module.exports = mongoose.model('user',userSchema);
 
 
 
-// const Sequelize = require('sequelize');
-
-// const sequelize = require('../util/database');
-
-// const user = sequelize.define('User',{
-//     name:Sequelize.STRING,
-//     email:{
-//         type:Sequelize.STRING,
-//         allowNull:false,
-//         unique:true
-//     },
-//     password:Sequelize.STRING,
-//     isPremium:Sequelize.BOOLEAN,
-//     totalExpence:Sequelize.INTEGER
-// });
-
-// module.exports = user;

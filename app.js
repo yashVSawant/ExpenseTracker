@@ -10,35 +10,16 @@ require('dotenv').config();
 const app = express();
 
 const mongoose = require('mongoose');
-const sequelize = require('./util/database');
 const userRoute = require('./route/user');
 const expenceRoute = require('./route/expense');
 const authenticateRoute = require('./route/purchase');
 const premiumRoute = require('./route/premium');
-const passwordRoute = require('./route/password');
-
-const expence = require('./model/expense');
-const user = require('./model/user');
-const order = require('./model/order');
-const resetPasswordRequest = require('./model/FPRequest');
-const reportUrl = require('./model/reportUrl');
+const passwordRoute = require('./route/forgotPassword');
 
 const accessLogStrem = fs.createWriteStream(
     path.join(__dirname,'access.log'),
     {flags:'a'}
 );
-
-// user.hasMany(expence);
-// expence.belongsTo(user);
-
-// user.hasMany(order);
-// order.belongsTo(user);
-
-// user.hasMany(resetPasswordRequest);
-// resetPasswordRequest.belongsTo(user);
-
-// user.hasMany(reportUrl);
-// reportUrl.belongsTo(user);
 
 app.use(helmet({
     contentSecurityPolicy: false,
@@ -48,7 +29,7 @@ app.use(morgan('combined',{stream: accessLogStrem}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors({origin:'*'}));
-app.use(express.static('frontend'));
+app.use(express.static('views'));
 
 app.use('/user',userRoute);
 app.use('/expence',expenceRoute);
@@ -57,19 +38,13 @@ app.use('/premium',premiumRoute);
 app.use('/password',passwordRoute);
 app.use((req,res)=>{
     console.log(req.url);
-    res.sendFile(path.join(__dirname,`frontend/${req.url}`))
+    res.sendFile(path.join(__dirname,`views/${req.url}`))
 })
 
 app.use((req,res,next)=>{
     res.status(404).send('Error: 404');
 })
 
-// sequelize
-// .sync()
-// .then(()=>{
-//     app.listen(3000);
-// })
-// .catch(err=>console.log(err));
 
 mongoose.connect('mongodb+srv://yash:0H5MGRs1p5S68cVo@cluster0.y35knxu.mongodb.net/expenseTracker?retryWrites=true&w=majority')
 .then(()=>{

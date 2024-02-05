@@ -1,9 +1,7 @@
 const path = require('path');
-const resetPasswordRequest = require('../model/FPRequest');
 const bcrypt = require('bcrypt');
 const User = require('../model/user');
 const Sib = require('sib-api-v3-sdk');
-const { UUIDV4, UUID } = require('sequelize');
 const mongoose = require('mongoose')
 let client = Sib.ApiClient.instance;
 require('dotenv').config();
