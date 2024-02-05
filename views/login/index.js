@@ -18,7 +18,7 @@ login.addEventListener('click',async(e)=>{
             clearInputFields();    
             alert(`${getloginPost.data.message}`);
             localStorage.setItem('token',token);
-            window.location.href = '../html/expense.html';
+            window.location.href = '../home/index.html';
         }catch(err){
             console.log(err)
             errorMsg.innerText =`${err.message}`;
@@ -41,5 +41,5 @@ login.addEventListener('click',async(e)=>{
 
 forgotPassword.addEventListener('click',(e)=>{
     e.preventDefault()
-    window.location.href = '../html/forgotPassword.html';
+    window.location.href = '../forgot-password/index.html';
 })

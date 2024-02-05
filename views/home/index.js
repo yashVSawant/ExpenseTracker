@@ -1,4 +1,3 @@
-
 const addExpence = document.getElementById('addExpence');
 const showExpences = document.getElementById('showExpences');
 const token = localStorage.getItem('token');
@@ -11,6 +10,13 @@ const downloads = document.getElementById('download');
 const showReportsHistory = document.getElementById('showReportsHistory');
 const pageButton = document.getElementById('pageButton');
 const setPages = document.getElementById('setPages');
+const cancelUpdate = document.getElementById('cancelUpdate');
+const updateExpence = document.getElementById('updateExpence');
+
+cancelUpdate.addEventListener('click',(e)=>{
+    e.preventDefault()
+    backFromUpdate();
+})
 
 setPages.addEventListener('click',async(e)=>{
     if(e.target.classList.contains('setButton')){
@@ -20,7 +26,11 @@ setPages.addEventListener('click',async(e)=>{
         showExpences.innerHTML='';
         const limit = localStorage.getItem('limit') || 10;
         const getExpenceData = await axios.get(`/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
-        getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
+        getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id));
+        pageButton.innerHTML=""
+        for(let i =1 ;i<=getExpenceData.data.data.totalPage ;i++){
+                createPageButton(i);
+        }
     
     }else{
         setPages.innerHTML=`
@@ -56,15 +66,23 @@ downloads.addEventListener('click',async()=>{
     
 })
 
-leaderboard.addEventListener('click',async()=>{
-    try{
-        const result = await axios.get('/premium/getLeaderboard');
-        leaderboardLable.style.display='inline'
-        result.data.forEach(async(item)=>{
-            createLeaderboard(item.name,item.totalExpense)
-        })
-    }catch(err){
-        alert('error')
+leaderboard.addEventListener('click',async(e)=>{
+    if(e.target.classList.contains('showLeaderBoard')){
+        try{
+            const result = await axios.get('/premium/getLeaderboard');
+            leaderboardLable.style.display='inline'
+            result.data.forEach(async(item)=>{
+                createLeaderboard(item.name,item.totalExpense)
+            })
+            e.target.className = "hindLeaderBoard";
+            e.target.innerText = 'hide leaderboard';
+        }catch(err){
+            alert('error')
+        }
+    }else if(e.target.classList.contains('hindLeaderBoard')){
+        showLeaderboard.innerHTML=""
+        e.target.className="showLeaderBoard"
+        e.target.innerText = 'Leaderboard'
     }
      
     
@@ -114,16 +132,50 @@ premium.onclick = async (e)=>{
 
 addExpence.addEventListener('click',async(e)=>{
     e.preventDefault();
-    try{
-        const amount = document.getElementById('amount').value;
-        const decription = document.getElementById('decription').value;
-        const category = document.getElementById('category').value;
-        // console.log(amount , decription , category);
-        const getPostExpence = await axios.post('/expence/postExpence',{amount , decription , category},{headers:{'Authorization':token}})
-        createExpences(amount , decription , category,getPostExpence.data._id)
-    }catch(err){
-        console.log(err)
-    }    
+    const amount = document.getElementById('amount').value;
+    const description = document.getElementById('decription').value;
+    const category = document.getElementById('category').value;
+    if(amount && description && category){
+        try{
+            const getPostExpence = await axios.post('/expence/postExpence',{amount , description , category},{headers:{'Authorization':token}})
+            createExpences(amount , description , category,getPostExpence.data._id)
+            document.getElementById('amount').value="";
+            document.getElementById('decription').value="";
+            document.getElementById('category').value="";
+            const total = document.getElementById('totalDay').innerText;
+            displayDayExpense(+total + +amount)
+        }catch(err){
+            alert("something went wrong!")
+        }   
+    }else{
+        alert("please enter all fields")
+    }
+     
+})
+updateExpence.addEventListener('click',async(e)=>{
+    e.preventDefault();
+    const id= localStorage.getItem("editId")
+    const amount = document.getElementById('amount').value;
+    const description = document.getElementById('decription').value;
+    const category = document.getElementById('category').value;
+    if(amount && description && category){
+        try{
+            await axios.put(`/expence/updateExpence?id=${id}`,{amount , description , category},{headers:{'Authorization':token}})
+            const expenceDiv = document.getElementById(`${id}`);
+            expenceDiv.innerHTML =`<p>amount :<p id="${id}amount">${amount}</p> |</p>
+            <p>description :<p id="${id}description">${description}</p> |</p>
+            <p>category :<p id="${id}category">${category}</p>  |</p>
+            <button class='edit'>Edit</button>
+            <button class='delete'>&#10060</button>
+            `
+            const total = document.getElementById('totalDay').innerText;
+            backFromUpdate();
+        }catch(err){
+            console.log(err)
+        }   
+    }else{
+        alert("please enter all fields")
+    }
 })
 
 showExpences.addEventListener('click',async(e)=>{
@@ -136,11 +188,30 @@ showExpences.addEventListener('click',async(e)=>{
         }catch(err){
             console.log(err)
         }
+    }else if(e.target.classList.contains('edit')){
+        try{
+            const id = e.target.parentNode.id;
+            localStorage.setItem("editId",id);
+            const amount = document.getElementById(`${id}amount`).innerText;
+            document.getElementById('amount').value = amount;
+            localStorage.setItem("editAmount",amount)
+            document.getElementById('decription').value=document.getElementById(`${id}description`).innerText;
+            document.getElementById('category').value=document.getElementById(`${id}category`).innerText;
+            document.getElementById('addButtonDiv').style.display='none';
+            document.getElementById('editButtonDiv').style.display='inline';
+
+        }catch(err){
+            console.log(err)
+        }
     }
 })
 
 window.addEventListener('DOMContentLoaded',async()=>{
     try{
+        const totalData = await axios.get('/expence/total',{headers:{'Authorization':token}});
+        displayYearExpense(totalData.data.totalYear)
+        displayMonthExpense(totalData.data.totalMonth)
+        displayDayExpense(totalData.data.totalDay)
         const limit = localStorage.getItem('limit') || 10;
         const getIsPremium = await axios.get('/expence/isPremiumUser',{headers:{'Authorization':token}});
         if(getIsPremium.data.isPremiumUser){
@@ -151,7 +222,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
             createPageButton(i);
         }
 
-        getExpenceData.data.allexpences.forEach(({_id,amount,decription,category})=>createExpences(amount,decription,category,_id))
+        getExpenceData.data.allexpences.forEach(({_id,amount,description,category})=>createExpences(amount,description,category,_id))
         const getReports = await axios.get('/expence/reportUrl',{headers:{'Authorization':token}})
         getReports.data.reports.forEach((item)=>{
             showReports(item)
@@ -168,11 +239,25 @@ pageButton.addEventListener('click',async(e)=>{
         const page = parseInt(e.target.id);
         const limit = localStorage.getItem('limit') || 10;
         const getExpenceData = await axios.get(`/expence/getExpences?page=${page}&limit=${limit}`,{headers:{'Authorization':token}});
-        const lengths = showExpences.children.length;
-        for(let i=1 ; i <=lengths ; i++){showExpences.removeChild(showExpences.children[0])};
+        showExpences.innerHTML = ""
         getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
     }
 })
+
+function displayYearExpense(total){
+    const totalYear = document.getElementById('totalYear');
+    totalYear.innerText = `${total}`;
+}
+
+function displayMonthExpense(total){
+    const totalMonth = document.getElementById('totalMonth');
+    totalMonth.innerText =`${total}`
+}
+
+function displayDayExpense(total){
+    const totalDay = document.getElementById('totalDay');
+    totalDay.innerText =`${total}`
+}
 
 function showReports(data){
     const a = document.createElement('a');
@@ -194,9 +279,10 @@ function makePremium(){
 
 function createExpences(amount,description,category,id){
     const expenceDiv = document.createElement('div');
-    expenceDiv.innerHTML=`<p>amount :${amount}  |</p>
-    <p>description :${description}  |</p>
-    <p>category :${category}</p>
+    expenceDiv.innerHTML=`<p>amount :<p id="${id}amount">${amount}</p> |</p>
+    <p>description :<p id="${id}description">${description}</p> |</p>
+    <p>category :<p id="${id}category">${category}</p>  |</p>
+    <button class='edit'>Edit</button>
     <button class='delete'>&#10060</button>
     `
     expenceDiv.className = 'expences';
@@ -222,5 +308,13 @@ function createPageButton(page){
     button.id = `${page}page`
     button.className = 'pages'
     pageButton.appendChild(button);
+}
+
+function backFromUpdate(){
+    document.getElementById('addButtonDiv').style.display="inline";
+    document.getElementById('editButtonDiv').style.display="none";
+    document.getElementById('amount').value="";
+    document.getElementById('decription').value="";
+    document.getElementById('category').value="";
 }
 
