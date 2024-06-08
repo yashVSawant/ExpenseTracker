@@ -2,7 +2,7 @@ const express = require('express');
 
 const route = express.Router();
 
-const controller = require('../controller/premium')
+const controller = require('../controllers/premium')
 
 route.get('/getLeaderboard',controller.getLeaderboard);
 

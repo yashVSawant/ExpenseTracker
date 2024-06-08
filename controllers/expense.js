@@ -1,30 +1,37 @@
-const User = require('../model/user');
 const mongoose = require('mongoose');
 const S3Services = require('../services/S3Services');
+
+const User = require('../models/user');
+const Expense = require('../models/expense');
+const Reports = require('../models/reportUrl');
 
 exports.postExpence = async(req,res,next)=>{
     try{
         const {amount , description , category} = req.body;
         const previousAmount = req.user.totalExpense;
         req.user.totalExpense =previousAmount + +amount;
-        const newExpense = req.user.expense.push({amount:amount,description:description,category:category});
+        const createExpense = new Expense({amount:amount,description:description,category:category,userId:req.user._id});
         await req.user.save();
-        res.json(newExpense);
+        await createExpense.save();
+        // console.log(createExpense)
+        res.status(200).json(createExpense);
     }catch(err){
-        res.status(200).status(500).json({success:false , message:'error Something went wrong !'})
+        res.status(500).json({success:false , message:'error Something went wrong !'})
     }
 }
 
 exports.getExpences = async(req,res,next)=>{
     try{
-        const {page,limit} = req.query;
-        
-        const offset = (page-1)* limit ;
-        const totalExpense = req.user.expense.length;
+        let {page,limit} = req.query;
+        const totalExpense = 10;//req.user.expense.length;
+        const totalPage = Math.ceil(totalExpense/limit);
+        const offset = totalExpense > page * limit ? totalExpense - page * limit:0;
+        if(offset<totalExpense % limit){
+            limit = totalExpense % limit;
+        }
         const hasNextPage = (offset+limit) < totalExpense
         const hasPreviousPage = page>1 
-        const totalPage = Math.ceil(totalExpense/limit);
-        const allexpences = req.user.expense.splice(offset,limit);
+        const allexpences = (await Expense.find({userId:req.user._id}).limit(limit).skip(0)).reverse();
         const data = {page,totalPage,hasNextPage,hasPreviousPage,totalExpense}
         res.status(200).json({allexpences,data});
     }catch(err){
@@ -33,11 +40,9 @@ exports.getExpences = async(req,res,next)=>{
     }
 }
 exports.getTotalExpense = async(req,res,next)=>{
-    const totalYearData = req.user.expense.filter((expense)=>{
-        const today = new Date();
-        const startOfYear = new Date(today.getFullYear(),0);
-        return  expense.createdAt > startOfYear;
-    });
+    const startOfYear = new Date(new Date().getFullYear(),0);
+    const totalYearData = await Expense.find({userId:req.user._id , createdAt: { $gte: startOfYear }})
+
     const totalMonthData = totalYearData.filter((expense)=>{
         const today = new Date()
         const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -55,19 +60,20 @@ exports.getTotalExpense = async(req,res,next)=>{
 
 exports.deleteExpence = async(req,res,next)=>{
     const id = req.query.id;
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // const session = await mongoose.startSession();
+    // session.startTransaction();
     try{
-        const getExpense = req.user.expense.find((expense)=>expense._id.toString()===id.toString())
-        await User.findOneAndUpdate({ _id: req.user._id },{$pull:{ expense: { _id: id } }},{ new: true });
-        const previousAmount = req.user.totalExpense;
-        const getAmount = getExpense.amount
-        req.user.totalExpense = previousAmount-getAmount;
-        await req.user.save({session})
-        await session.commitTransaction();
+        await Expense.findByIdAndDelete(id);
+        // const getExpense = req.user.expense.find((expense)=>expense._id.toString()===id.toString())
+        // await User.findOneAndUpdate({ _id: req.user._id },{$pull:{ expense: { _id: id } }},{ new: true });
+        // const previousAmount = req.user.totalExpense;
+        // const getAmount = getExpense.amount
+        // req.user.totalExpense = previousAmount-getAmount;
+        // await req.user.save({session})
+        // await session.commitTransaction();
         res.status(201).json({success:true})
     }catch(err){
-        await session.abortTransaction();
+        // await session.abortTransaction();
         console.log(err)
     }
 }
@@ -76,15 +82,7 @@ exports.updateExpence = async(req,res,next)=>{
     const id = req.query.id;
     const {amount , description , category} = req.body;
     try{
-        const getExpense = req.user.expense.find((expense)=>expense._id.toString()===id.toString())
-        const previousAmount = req.user.totalExpense;
-        const getAmount = getExpense.amount;
-        getExpense.amount=amount;
-        getExpense.description = description;
-        getExpense.category = category;
-        req.user.totalExpense = previousAmount-getAmount;
-        req.user.totalExpense += amount;
-        await req.user.save()
+        await Expense.findByIdAndUpdate(id,{amount , description , category})
         res.status(201).json({success:true})
     }catch(err){
         res.status(500).json({success:false})
@@ -98,7 +96,7 @@ exports.isPremium = (req,res,next)=>{
 
 exports.getUrl = async(req,res,next)=>{
     try{
-        const reports = await req.user.reportUrl;
+        const reports = await Reports.find({userId:req.user._id}).limit(5);
         res.status(200).json({success:true,reports})
     }catch(err){
         res.status(404).json({success:false})
@@ -107,8 +105,8 @@ exports.getUrl = async(req,res,next)=>{
 
 exports.downloadExpense = async(req,res,next)=>{
     try{
-        const userId = req.user.id;
-        const getUserExpences = req.user.expense;
+        const userId = req.user._id;
+        const getUserExpences = await Expense.findById(userId);
         const stringifiedExpenses = JSON.stringify(getUserExpences);
         const filename = `expense${userId}/${new Date()}.txt`;
         const fileUrl = await S3Services.uploadToS3(stringifiedExpenses,filename);
