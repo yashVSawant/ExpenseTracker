@@ -1,8 +1,8 @@
-const User = require('../model/user');
+const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-exports.postSignupInfo = (req,res,next)=>{
+exports.signup = (req,res,next)=>{
     const {name,email,password,isPremium} = req.body;
         if(isstringinvalid(name) || isstringinvalid(email) || isstringinvalid(password)){
             return res.status(400).json({err:'bad parameter : somthing went wrong'})
@@ -19,7 +19,7 @@ exports.postSignupInfo = (req,res,next)=>{
         })
 }
 
-exports.checkEmailAndPassword = async(req,res,next)=>{
+exports.login = async(req,res,next)=>{
     const {email,password} = req.body;
     try{
         if(isstringinvalid(email) || isstringinvalid(password)){
@@ -32,7 +32,7 @@ exports.checkEmailAndPassword = async(req,res,next)=>{
                     res.status(500).json({success:false ,message:'something went wrong !'})                   
                 }
                 else if(result){
-                    res.status(201).json({success:true ,message:'User login succesfull',token:generateAccessToken(checkUser[0].id,checkUser[0].name,checkUser[0].isPremium)})
+                    res.status(201).json({success:true ,message:'User login succesfull',token:generateAccessToken(checkUser[0]._id,checkUser[0].name,checkUser[0].isPremium)})
                 }else{
                     res.status(401).json({success:false ,message:'incorrect password !'})
                 }

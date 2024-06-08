@@ -1,10 +1,10 @@
 const express = require('express');
 
-const authentication = require('../middleware/authentication');
+const authentication = require('../middlewares/authentication');
 
 const route = express.Router();
 
-const expenceController = require('../controller/expense');
+const expenceController = require('../controllers/expense');
 
 route.get('/getExpences',authentication.authenticate,expenceController.getExpences);
 route.post('/postExpence',authentication.authenticate,expenceController.postExpence);

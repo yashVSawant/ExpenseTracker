@@ -26,7 +26,8 @@ setPages.addEventListener('click',async(e)=>{
         showExpences.innerHTML='';
         const limit = localStorage.getItem('limit') || 10;
         const getExpenceData = await axios.get(`/expence/getExpences?page=1&limit=${limit}`,{headers:{'Authorization':token}});
-        getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id));
+        getExpenceData.data.allexpences.forEach(({id,amount,description,category})=>createExpences(amount,description,category,id));
+        // console.log(getExpenceData.data.allexpences)
         pageButton.innerHTML=""
         for(let i =1 ;i<=getExpenceData.data.data.totalPage ;i++){
                 createPageButton(i);
@@ -138,13 +139,18 @@ addExpence.addEventListener('click',async(e)=>{
     if(amount && description && category){
         try{
             const getPostExpence = await axios.post('/expence/postExpence',{amount , description , category},{headers:{'Authorization':token}})
-            createExpences(amount , description , category,getPostExpence.data._id)
+            appendNewExpences(amount , description , category,getPostExpence.data._id)
             document.getElementById('amount').value="";
             document.getElementById('decription').value="";
             document.getElementById('category').value="";
-            const total = document.getElementById('totalDay').innerText;
-            displayDayExpense(+total + +amount)
+            const totalDay = document.getElementById('totalDay').innerText;
+            const totalMonth = document.getElementById('totalMonth').innerText;
+            const totalYear = document.getElementById('totalYear').innerText;
+            displayDayExpense(+totalDay + +amount);
+            displayMonthExpense(+totalMonth + +amount);
+            displayYearExpense(+totalYear + +amount);
         }catch(err){
+            console.log(err)
             alert("something went wrong!")
         }   
     }else{
@@ -168,7 +174,6 @@ updateExpence.addEventListener('click',async(e)=>{
             <button class='edit'>Edit</button>
             <button class='delete'>&#10060</button>
             `
-            const total = document.getElementById('totalDay').innerText;
             backFromUpdate();
         }catch(err){
             console.log(err)
@@ -182,9 +187,17 @@ showExpences.addEventListener('click',async(e)=>{
     if(e.target.classList.contains('delete')){
         try{
             const id = e.target.parentNode.id;
+            const amount = document.getElementById(`${id}amount`).innerText;
             await axios.delete(`/expence/deleteExpence?id=${id}`,{headers:{'Authorization':token}});
             const expenceDiv = document.getElementById(`${id}`);
             showExpences.removeChild(expenceDiv);
+            const totalDay = document.getElementById('totalDay').innerText;
+            const totalMonth = document.getElementById('totalMonth').innerText;
+            const totalYear = document.getElementById('totalYear').innerText;
+            console.log(+totalDay - +amount)
+            displayDayExpense(+totalDay - +amount);
+            displayMonthExpense(+totalMonth - +amount);
+            displayYearExpense(+totalYear - +amount);
         }catch(err){
             console.log(err)
         }
@@ -240,7 +253,7 @@ pageButton.addEventListener('click',async(e)=>{
         const limit = localStorage.getItem('limit') || 10;
         const getExpenceData = await axios.get(`/expence/getExpences?page=${page}&limit=${limit}`,{headers:{'Authorization':token}});
         showExpences.innerHTML = ""
-        getExpenceData.data.allexpences.forEach(({id,amount,decription,category})=>createExpences(amount,decription,category,id))
+        getExpenceData.data.allexpences.forEach(({id,amount,description,category})=>createExpences(amount,description,category,id))
     }
 })
 
@@ -287,9 +300,20 @@ function createExpences(amount,description,category,id){
     `
     expenceDiv.className = 'expences';
     expenceDiv.id = id;
-    
-    showExpences.appendChild(expenceDiv)
-    
+
+    showExpences.appendChild(expenceDiv); 
+}
+function appendNewExpences(amount,description,category,id){
+    const expenceDiv = document.createElement('div');
+    expenceDiv.innerHTML=`<p>amount :<p id="${id}amount">${amount}</p> |</p>
+    <p>description :<p id="${id}description">${description}</p> |</p>
+    <p>category :<p id="${id}category">${category}</p>  |</p>
+    <button class='edit'>Edit</button>
+    <button class='delete'>&#10060</button>
+    `
+    expenceDiv.className = 'expences';
+    expenceDiv.id = id;
+    showExpences.insertBefore(expenceDiv,showExpences.childNodes[0]); 
 }
 
 function createLeaderboard(name,amount){

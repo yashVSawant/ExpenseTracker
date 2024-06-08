@@ -1,7 +1,7 @@
 const express = require('express');
 
-const controller = require('../controller/purchase');
-const authentication = require('../middleware/authentication');
+const controller = require('../controllers/purchase');
+const authentication = require('../middlewares/authentication');
 
 const route = express.Router();
 

@@ -1,6 +1,6 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
-const User = require('../model/user');
+const User = require('../models/user');
 const Sib = require('sib-api-v3-sdk');
 const mongoose = require('mongoose')
 let client = Sib.ApiClient.instance;
@@ -18,7 +18,6 @@ exports.forgotPassword =async (req,res,next)=>{
     const receivers =[
         {email:userMail},
     ]
-    console.log('>>.2')
     try{
         const requestUser = await User.findOne({'email':userMail})
         if(!requestUser) throw new Error(JSON.stringify(err));
@@ -29,7 +28,7 @@ exports.forgotPassword =async (req,res,next)=>{
             to:receivers,
             subject:'reset password link',
             textContent:`
-            checking msg http://184.73.124.55:3000/password/resetpassword/${requestUser.resetPassword._id}
+            checking msg http://184.73.124.55/password/resetpassword/${requestUser.resetPassword._id}
             `
             
         })
