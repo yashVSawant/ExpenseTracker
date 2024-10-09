@@ -4,30 +4,20 @@ const jwt = require('jsonwebtoken');
 const Order = require('../models/order');
 const purchasePremium = async (req,res)=>{
     try{
-        // console.log('in>>>',process.env.RAZORPAY_KEY_ID)
         var rzp = new Razorpay({
             key_id:process.env.RAZORPAY_KEY_ID,
             key_secret:process.env.RAZORPAY_KEY_SECRET
         })
         const amount = 5500;
-        // console.log(amount);
+        
         rzp.orders.create({amount,currency:'INR'},(err ,order)=>{
                 if(err){
                     console.log(err)
                     throw new Error(JSON.stringify(err))
                 }
                 const createOrder = new Order({orderId:order.id ,status:'pending ,',userId:req.user._id})
-                // req.user.order.orderId=order.id;
-                // req.user.order.status='pending';
-                // req.user.save()
-                // .then(()=>{
                 createOrder.save();
                 return res.status(201).json({order ,key_id : rzp.key_id})
-                // })
-                // .catch((err)=>{
-                //     console.log(err)
-                //     throw new Error(err)
-                // })
             })      
         
     }catch(err){
