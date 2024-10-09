@@ -16,7 +16,8 @@
     "razorpay": "^2.9.2",
     "sequelize": "^6.35.1",
     "sib-api-v3-sdk": "^8.5.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "vercel": "^35.2.1"
   },
   "scripts": {
     "start": "nodemon app.js"

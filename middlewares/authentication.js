@@ -7,8 +7,7 @@ const authenticate = async(req,res,next)=>{
     try{
         const token = req.header('Authorization')
         const user = jwt.verify(token,process.env.TOKEN);
-        const getUser = await User.findById(user.userId);
-        req.user = getUser;
+        req.user = user;
         next();
     }catch(err){
         res.status(401).json({success:false,message:'something went wrong in authentication'});

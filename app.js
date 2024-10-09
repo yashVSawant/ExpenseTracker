@@ -16,16 +16,16 @@ const authenticateRoute = require('./routes/purchase');
 const premiumRoute = require('./routes/premium');
 const passwordRoute = require('./routes/forgotPassword');
 
-const accessLogStream = fs.createWriteStream(
-    path.join(__dirname,'access.log'),
-    {flags:'a'}
-);
+// const accessLogStream = fs.createWriteStream(
+//     path.join(__dirname,'access.log'),
+//     {flags:'a'}
+// );
 
 app.use(helmet({
     contentSecurityPolicy: false,
   }));
   
-app.use(morgan('combined',{stream: accessLogStream}))
+// app.use(morgan('combined',{stream: accessLogStream}))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors({origin:'*'}));
@@ -49,6 +49,6 @@ app.use((req,res,next)=>{
 mongoose.connect('mongodb+srv://yashsawant310:XtPFJIFySyCOtjZm@cluster0.hp8gwv4.mongodb.net/expenseTracker?retryWrites=true&w=majority')
 .then(()=>{
     console.log('conntected');
-    app.listen(3000);
+    app.listen(process.env.PORT||3000);
 })
 .catch(err=>console.log(err));
